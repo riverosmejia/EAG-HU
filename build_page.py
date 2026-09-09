@@ -1,197 +1,187 @@
 # -*- coding: utf-8 -*-
-"""Genera index.html para EAG-HU: 44 HUs del MVP de EAG Ingenieros (SECOP II)."""
-import html as H
+"""Genera index.html (landing propuesta) con el sistema de diseño Stripi-Inspired.
 
-# (id, prioridad, issue, actor, capacidad, valor, [criterios])
+Mesh gradiente en el hero, Inter 300 con tracking negativo, indigo #533afd
+como único CTA, pills, tnum, banda cream para interludios.
+"""
+import html as H
+import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
 
-CSS = """
-:root{
-  --bg:#ffffff;--bg-soft:#f6f8f8;--bg-accent:#eef7f6;--ink:#10201e;--ink-2:#33423f;--muted:#64716e;
-  --line:#e3e8e7;--line-strong:#cdd6d4;--accent:#0f766e;--accent-strong:#0b5e58;--accent-soft:#e6f4f2;
-  --ok:#1a7f4e;--warn:#b45309;--danger:#b42318;--radius:14px;--radius-sm:9px;
-  --shadow-card:0 1px 2px rgba(16,32,30,.05);
-  --shadow-rec:0 18px 44px -18px rgba(15,118,110,.35),0 2px 6px rgba(16,32,30,.06);
-  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
-::selection{background:var(--accent-soft)}
-a{color:var(--accent-strong);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
-.mono{font-family:var(--mono)}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
-.brand .sub{color:var(--muted);font-weight:500}
-.topbar nav{display:flex;gap:22px;font-size:13.5px;font-weight:500}
-.topbar nav a{color:var(--ink-2)}
-.topbar nav .pill{font-family:var(--mono);font-size:11.5px;background:var(--accent-soft);color:var(--accent-strong);padding:6px 10px;border-radius:99px;margin-left:8px}
-.btn-print{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);padding:9px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s}
-.btn-print:hover{background:var(--accent-strong)}
-.hero{padding:72px 0 44px;background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:1px solid var(--line)}
-.eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--accent)}
-.hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.08;letter-spacing:-1.2px;font-weight:700;margin:18px 0;max-width:820px}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p.lead{font-size:17.5px;color:var(--ink-2);max-width:780px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px;max-width:620px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow-card)}
-.stat .n{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-1px;color:var(--accent)}
-.stat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
-.drivers{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.drivers span{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);border:1px solid var(--line-strong);background:#fff;padding:8px 13px;border-radius:99px}
-.hero-cta{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap}
-.cta{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:var(--radius-sm)}
-.cta.primary{background:var(--accent);color:#fff}
-.cta.primary:hover{background:var(--accent-strong);text-decoration:none}
-.cta.ghost{border:1px solid var(--line-strong);color:var(--ink-2)}
-.cta.ghost:hover{background:var(--bg-soft);text-decoration:none}
-section{padding:64px 0}
-.sec-head{margin-bottom:34px}
-.sec-kicker{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
-.sec-title{font-size:clamp(24px,3vw,34px);letter-spacing:-.6px;font-weight:700;margin-top:8px}
-.sec-sub{color:var(--muted);margin-top:10px;max-width:760px;font-size:15.5px}
-.callout{display:flex;gap:12px;align-items:flex-start;margin-top:22px;padding:16px 18px;background:var(--accent-soft);border:1px solid rgba(15,118,110,.25);border-radius:var(--radius-sm);font-size:14px;color:var(--ink-2)}
-.callout.warn{background:#fff8ec;border-color:rgba(180,83,9,.3)}
-.callout.warn svg{stroke:var(--warn)}
-.callout svg{flex:none;margin-top:2px;stroke:var(--accent)}
-.flowgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:8px}
-.flow{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-card)}
-.flow .step{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px;color:var(--accent)}
-.flow .what{font-size:14.5px;font-weight:600;line-height:1.3}
-.flow .why{font-size:12px;color:var(--muted);line-height:1.45}
-.actors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.actor{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-card)}
-.actor .icon{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.actor h3{font-size:15.5px;font-weight:700}
-.actor .role{font-size:11px;font-family:var(--mono);color:var(--accent-strong);margin-top:2px;letter-spacing:.8px}
-.actor p{font-size:13px;color:var(--ink-2);margin-top:8px;line-height:1.5}
-.epics{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-.epic{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px;color:var(--ink);transition:border-color .15s,transform .15s}
-.epic:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
-.epic .e-no{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:1.2px;color:var(--muted)}
-.epic h3{font-size:14.5px;font-weight:700;line-height:1.25}
-.epic .hu-range{font-family:var(--mono);font-size:11px;color:var(--accent-strong);margin-top:auto}
-.epic .issue{font-family:var(--mono);font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
-.detail{display:grid;grid-template-columns:64px 1fr;gap:22px;padding:36px 0;border-top:1px solid var(--line)}
-.detail .dnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent-strong);padding-top:3px}
-.detail h3{font-size:20px;letter-spacing:-.3px;font-weight:700}
-.detail .dsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:3px}
-.detail>p{margin-top:12px;font-size:15px;color:var(--ink-2);max-width:860px}
-.hus{margin-top:20px;display:flex;flex-direction:column;gap:12px;max-width:900px}
-.hu{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px}
-.hu-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hu-id{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent-strong)}
-.pill-p0,.pill-p1{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.6px;padding:3px 8px;border-radius:99px}
-.pill-p0{background:#e8f6ef;color:var(--ok);border:1px solid rgba(26,127,78,.25)}
-.pill-p1{background:#fff8ec;color:var(--warn);border:1px solid rgba(180,83,9,.25)}
-.pill-issue{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--bg-soft);padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
-.hu-narr{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.5}
-.hu-narr em{font-style:normal;color:var(--accent-strong);font-weight:600}
-.hu-crit{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
-.hu-crit li{font-size:13px;color:var(--ink-2);padding-left:20px;position:relative;line-height:1.5}
-.hu-crit li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--accent)}
-.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
-table.cmp{width:100%;border-collapse:collapse;min-width:760px}
-table.cmp th,table.cmp td{padding:13px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:13.5px}
-table.cmp thead th{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--bg-soft);position:sticky;top:60px;z-index:2}
-table.cmp td.rowhead{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--muted);background:var(--bg-soft);width:170px}
-table.cmp tbody tr:last-child td{border-bottom:none}
-table.cmp td .mono{font-size:12px;color:var(--ink-2)}
-footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:34px 0;font-size:13px;color:var(--muted)}
-.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
-@media (max-width:1080px){.epics{grid-template-columns:repeat(3,1fr)}.flowgrid{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:980px){.actors{grid-template-columns:repeat(2,1fr)}.topbar nav{display:none}}
-@media (max-width:640px){
- .hero{padding:52px 0 30px}section{padding:46px 0}
- .detail{grid-template-columns:1fr;gap:10px}
- .stats{grid-template-columns:repeat(3,1fr)}
- .epics{grid-template-columns:1fr 1fr}
- .flowgrid{grid-template-columns:1fr 1fr}
- .actors{grid-template-columns:1fr}
- .brand .sub{display:none}
-}
-@media print{
- @page{margin:14mm 12mm}
- body{font-size:11.5px}
- .topbar{position:static;backdrop-filter:none}
- .btn-print,.hero-cta,.topbar nav{display:none!important}
- .hero{padding:26px 0 14px;background:none}
- .reveal{opacity:1;transform:none}
- .epics{grid-template-columns:repeat(3,1fr)}
- .actors{grid-template-columns:repeat(2,1fr)}
- .flowgrid{grid-template-columns:repeat(5,1fr)}
- .flow,.actor,.hu{break-inside:avoid}
- .detail{padding:14px 0;break-inside:avoid}
- .table-scroll{overflow:visible}table.cmp{min-width:0}table.cmp thead th{position:static}
- footer{display:none}
- *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
-"""
+OUT = os.path.dirname(os.path.abspath(__file__))
+
 
 def esc(s):
     return H.escape(s, quote=False)
 
-def hu_card(hid, pri, issue, actor, cap, valor, crits):
-    pill = f'<span class="pill-p0">{pri}</span>' if pri == "P0" else f'<span class="pill-p1">{pri}</span>'
-    lis = "\n".join(f"<li>{esc(c)}</li>" for c in crits)
-    return f'''<div class="hu">
-<div class="hu-head"><span class="hu-id">{hid}</span>{pill}<span class="pill-issue">{esc(issue)}</span></div>
-<p class="hu-narr">Como <em>{esc(actor)}</em>, quiero <em>{esc(cap)}</em>, para {esc(valor)}.</p>
-<ul class="hu-crit">
-{lis}
-</ul>
-</div>'''
 
-def epic_detail(no, title, desc, issue, hus):
-    cards = "\n".join(hu_card(*h) for h in hus)
-    return f'''<article class="detail reveal" id="e{no.lower()}">
-<div class="dnum">{no}</div>
-<div>
-<h3>{esc(title)}</h3>
-<div class="dsub">{esc(issue)} · {len(hus)} historias</div>
-<p>{esc(desc)}</p>
-<div class="hus">
-{cards}
-</div>
-</div>
-</article>'''
+epic_map_rows = "\n".join(
+    f"<tr><td class='rowhead tnum'>{e[0]}</td><td>{esc(e[1])}</td>"
+    f"<td class='tnum'>HU-{e[4][0][0].split('-')[1]} → HU-{e[4][-1][0].split('-')[1]}</td>"
+    f"<td class='tnum'>{esc(e[3])}</td><td class='tnum'>{len(e[4])}</td></tr>"
+    for e in EPICAS)
 
-def epic_card(no, title, hus, issue):
-    rng = f"HU-{hus[0][0].split('-')[1]} → HU-{hus[-1][0].split('-')[1]}"
-    return f'''<a class="epic" href="#e{no.lower()}">
-<span class="e-no">ÉPICA {no}</span>
-<h3>{esc(title)}</h3>
-<span class="hu-range">{rng}</span>
-<span class="issue">{esc(issue)}</span>
-</a>'''
-
-def actor_card(name, role, desc, path):
-    return f'''<article class="actor">
-<div class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{path}</svg></div>
-<h3>{esc(name)}</h3>
-<div class="role">{esc(role)}</div>
-<p>{esc(desc)}</p>
-</article>'''
-
-def flow_card(i, what, why):
-    return f'''<div class="flow"><span class="step">PASO {i}</span><span class="what">{esc(what)}</span><span class="why">{esc(why)}</span></div>'''
-
-epics_cards = "\n".join(epic_card(e[0], e[1], e[4], e[3]) for e in EPICAS)
-epics_detail = "\n\n".join(epic_detail(e[0], e[1], e[2], e[3], e[4]) for e in EPICAS)
-actors_html = "\n".join(actor_card(*a) for a in ACTORS)
-flow_html = "\n".join(flow_card(i+1, w, wh) for i, (w, wh) in enumerate(FLOW))
 pend_rows = "\n".join(
-    f'<tr><td>{esc(d)}</td><td><span class="mono">{esc(h)}</span></td><td>{esc(r)}</td></tr>'
+    f"<tr><td>{esc(d)}</td><td class='tnum'><code>{esc(h)}</code></td><td>{esc(r)}</td></tr>"
     for d, h, r in PENDIENTES)
-excl_lis = "\n".join(f"<li>{esc(x)}</li>" for x in EXCLUSIONES)
+
+excl_lis = "".join(f"<li>{esc(x)}</li>" for x in EXCLUSIONES)
+flow_html = "".join(
+    f"<li><strong>{esc(w)}</strong><span>— {esc(wh)}</span></li>"
+    for w, wh in FLOW)
+actors_html = "\n".join(
+    f"<div class='actor'><h3>{esc(a[0])}</h3><span class='role'>{esc(a[1])}</span><p>{esc(a[2])}</p></div>"
+    for a in ACTORS)
+
+total_hus = sum(len(e[4]) for e in EPICAS)
+
+CSS = """
+:root{
+  --primary:#533afd;--primary-deep:#4434d4;--primary-press:#2e2b8c;--primary-soft:#665efd;
+  --primary-subdued:#b9b9f9;--brand-dark:#1c1e54;
+  --ink:#0d253d;--ink-2:#273951;--mute:#64748d;
+  --canvas:#ffffff;--canvas-soft:#f6f9fc;--cream:#f5e9d4;
+  --hairline:#e3e8ee;--hairline-input:#a8c3de;
+  --ruby:#ea2261;--lemon:#9b6829;
+  --shadow-1:rgba(0,55,112,.08) 0 1px 3px;
+  --shadow-2:rgba(0,55,112,.08) 0 8px 24px, rgba(0,55,112,.04) 0 2px 6px;
+  --sans:'Inter','SF Pro Display',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:var(--sans);color:var(--ink);background:var(--canvas);font-weight:300;
+  font-size:15px;line-height:1.5;font-feature-settings:"ss01";-webkit-font-smoothing:antialiased}
+::selection{background:var(--primary-subdued)}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--sans);font-weight:400;font-size:.85em;background:var(--canvas-soft);
+  border:1px solid var(--hairline);border-radius:4px;padding:1px 6px;color:var(--ink-2)}
+strong{font-weight:500}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.tnum{font-feature-settings:"tnum";letter-spacing:-.2px}
+
+/* ---------- Topbar sobre mesh ---------- */
+.topbar{position:absolute;top:0;left:0;right:0;z-index:50}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:400;font-size:14.5px;letter-spacing:-.2px;color:var(--ink)}
+.brand .sub{color:var(--mute);font-weight:300}
+.topbar nav{display:flex;gap:22px;font-size:14px;font-weight:300}
+.topbar nav a{color:var(--ink-2)}
+.btn-pill{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400;color:#fff;
+  background:var(--primary);border:none;padding:8px 16px;border-radius:9999px;cursor:pointer;transition:background .15s}
+.btn-pill:hover{background:var(--primary-deep)}
+.btn-pill:active{background:var(--primary-press)}
+.btn-pill.ghost{background:var(--canvas);color:var(--primary);border:1px solid var(--primary)}
+.btn-pill.ghost:hover{background:var(--canvas-soft)}
+.btn-pill.dark{background:var(--brand-dark)}
+.btn-pill.dark:hover{background:#16183f}
+
+/* ---------- Mesh hero ---------- */
+.hero{position:relative;padding:132px 0 72px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(42% 100% at 3% 45%, rgba(245,233,212,.95), transparent 60%),
+    radial-gradient(38% 90% at 24% 25%, rgba(249,150,80,.4), transparent 62%),
+    radial-gradient(44% 100% at 50% 40%, rgba(178,132,255,.45), transparent 65%),
+    radial-gradient(50% 115% at 77% 30%, rgba(83,58,253,.7), transparent 65%),
+    radial-gradient(36% 90% at 100% 50%, rgba(234,34,97,.5), transparent 60%);
+  filter:blur(4px)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;z-index:-1;
+  background:linear-gradient(180deg,transparent,var(--canvas))}
+.eyebrow{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--canvas);display:inline-flex;padding:4px 10px;border-radius:9999px;
+  border:1px solid var(--hairline);box-shadow:var(--shadow-1)}
+.hero h1{font-size:56px;font-weight:300;line-height:1.03;letter-spacing:-1.4px;margin:20px 0 18px;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--primary)}
+.hero p.lead{font-size:16px;color:var(--ink-2);max-width:740px;line-height:1.45}
+.stat-row{display:flex;gap:8px;margin-top:26px;flex-wrap:wrap}
+.stat-pill{background:var(--canvas);border:1px solid var(--hairline);border-radius:9999px;
+  padding:8px 16px;font-size:14px;color:var(--ink-2);box-shadow:var(--shadow-1);font-feature-settings:"tnum"}
+.stat-pill b{color:var(--primary-deep);font-weight:500;font-size:16px}
+.hero-cta{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- Secciones ---------- */
+section{padding:64px 0}
+.band-soft{background:var(--canvas-soft)}
+.band-cream{background:var(--cream)}
+.sec-head{margin-bottom:34px}
+.sec-kicker{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--primary-deep);
+  background:var(--primary-subdued);display:inline-flex;padding:3px 10px;border-radius:9999px;margin-bottom:12px}
+.sec-title{font-size:32px;font-weight:300;letter-spacing:-.64px;line-height:1.1}
+.sec-sub{color:var(--mute);margin-top:10px;max-width:720px;font-size:15px}
+
+/* ---------- Actores ---------- */
+.actors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.actor{background:var(--canvas);border:1px solid var(--hairline);border-radius:12px;padding:28px;box-shadow:var(--shadow-1)}
+.actor h3{font-size:20px;font-weight:300;letter-spacing:-.2px}
+.actor .role{display:inline-block;font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--primary-subdued);border-radius:9999px;padding:3px 8px;margin:8px 0}
+.actor p{font-size:14px;color:var(--ink-2);line-height:1.45}
+
+/* ---------- Flow ---------- */
+ol.flow{list-style:none;counter-reset:paso;columns:2;column-gap:48px;margin-top:8px}
+ol.flow li{counter-increment:paso;position:relative;padding:9px 0 9px 46px;border-bottom:1px solid var(--hairline);
+  break-inside:avoid;font-size:14.5px;color:var(--ink-2)}
+ol.flow li::before{content:counter(paso,decimal-leading-zero);position:absolute;left:0;top:9px;width:30px;height:30px;
+  border-radius:9999px;background:var(--brand-dark);color:#fff;font-size:10px;font-weight:400;font-feature-settings:"tnum";
+  display:flex;align-items:center;justify-content:center}
+ol.flow strong{display:inline;color:var(--ink);font-weight:500}
+ol.flow span{display:block;font-size:13px;color:var(--mute)}
+
+/* ---------- Mapa épicas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--hairline);border-radius:12px;background:var(--canvas);box-shadow:var(--shadow-1)}
+table.doc-t{width:100%;border-collapse:collapse;font-size:14px;font-weight:300;min-width:720px}
+table.doc-t th,table.doc-t td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--hairline)}
+table.doc-t thead th{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--mute);background:var(--canvas-soft)}
+table.doc-t tbody tr:last-child td{border-bottom:none}
+table.doc-t td.rowhead{font-weight:400;color:var(--primary-deep);background:var(--canvas-soft);white-space:nowrap}
+table.doc-t td.tnum{font-feature-settings:"tnum";letter-spacing:-.2px}
+table.doc-t td a{font-weight:400}
+.callout{display:flex;gap:12px;align-items:flex-start;margin-top:20px;padding:16px 18px;border-radius:12px;
+  font-size:14px;line-height:1.5;border:1px solid var(--hairline)}
+.callout svg{width:18px;height:18px;flex:none;margin-top:2px}
+.callout.note{background:var(--canvas-soft);color:var(--ink-2)}
+.callout.note svg{stroke:var(--primary)}
+.callout.cream{background:var(--cream);color:var(--ink)}
+.callout.cream svg{stroke:var(--lemon)}
+.callout.warn{background:var(--canvas);color:var(--ink-2);border-color:var(--hairline)}
+.callout.warn svg{stroke:var(--lemon)}
+
+/* ---------- Footer ---------- */
+footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64px 0;font-size:13px;color:var(--mute)}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot a{color:var(--mute)}
+.foot a:hover{color:var(--primary)}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+
+@media (max-width:960px){
+  .topbar nav{display:none}
+  .hero{padding:104px 0 56px}
+  .hero h1{font-size:40px;letter-spacing:-1px}
+  .actors{grid-template-columns:repeat(2,1fr)}
+  ol.flow{columns:1}
+}
+@media (max-width:640px){
+  .hero h1{font-size:34px;letter-spacing:-.8px}
+  section{padding:46px 0}
+  .actors{grid-template-columns:1fr}
+}
+@media print{
+  .topbar,.hero-cta,.topbar nav{display:none!important}
+  .hero{padding:26px 0 14px}
+  .hero::before,.hero::after{display:none}
+  .reveal{opacity:1;transform:none}
+  .actors{grid-template-columns:repeat(2,1fr)}
+  ol.flow{columns:2}
+  .hu,.adm,.tbl-wrap,.actor{break-inside:avoid;box-shadow:none}
+  section{padding:18px 0}
+  footer{display:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+"""
 
 page = f'''<!DOCTYPE html>
 <html lang="es">
@@ -199,14 +189,14 @@ page = f'''<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EAG Ingenieros · Historias de Usuario del MVP</title>
-<meta name="description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales, 2 roles iniciales. Versión 1.0 · 7 de septiembre de 2026.">
+<meta name="description" content="{total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. {len(EPICAS)} épicas funcionales. Versión 1.0 · 7 de septiembre de 2026.">
 <meta property="og:title" content="EAG Ingenieros · Historias de Usuario del MVP">
-<meta property="og:description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
+<meta property="og:description" content="{total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 28 9v14L16 30 4 23V9z' fill='%230f766e'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>{CSS}</style>
 </head>
 <body>
@@ -214,20 +204,17 @@ page = f'''<!DOCTYPE html>
 <header class="topbar">
   <div class="wrap topbar-inner">
     <div class="brand">
-      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14L16 30 4 23V9z" fill="#0f766e"/><path d="M11 16.5l3.5 3.5L21 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 30 10v12L16 30 2 22V10z" fill="#533afd"/><path d="M11 16.5l3.5 3.5L21 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>EAG Ingenieros <span class="sub">· MVP · Historias de Usuario</span></span>
     </div>
     <nav aria-label="Secciones">
       <a href="#como-leer">Cómo leerlo</a>
       <a href="#flujo">Flujo</a>
-      <a href="#epicas">Épicas <span class="pill">10</span></a>
-      <a href="#detalle">Historias <span class="pill">44</span></a>
+      <a href="#mapa">Épicas</a>
       <a href="#pendientes">Pendientes</a>
+      <a href="docs/" style="color:var(--primary);font-weight:400">Documentación →</a>
     </nav>
-    <button class="btn-print" onclick="window.print()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Exportar PDF
-    </button>
+    <a class="btn-pill" href="docs/">Ver documentación</a>
   </div>
 </header>
 
@@ -237,132 +224,103 @@ page = f'''<!DOCTYPE html>
       <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 1.0 · 7 de septiembre de 2026</div>
       <h1>Historias de usuario del <em>MVP</em></h1>
       <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Este documento es una <strong>propuesta del equipo</strong>: no demuestra aprobación empresarial, cobertura completa de SECOP, integración productiva ni mejoras medidas. Toda decisión final requiere revisión humana y validación de EAG.</p>
-      <div class="stats" aria-label="Cifras del alcance">
-        <div class="stat"><div class="n">44</div><div class="l">historias propuestas</div></div>
-        <div class="stat"><div class="n">10</div><div class="l">épicas funcionales</div></div>
-        <div class="stat"><div class="n">2</div><div class="l">roles iniciales</div></div>
-      </div>
-      <div class="drivers" aria-label="Base documental">
-        <span>CONTEXTO.md</span>
-        <span>CASO_DE_USO.md</span>
-        <span>MATRIZ_DE_PERMISOS.md</span>
-        <span>BACKLOG.md</span>
-        <span>MVP-01 a MVP-14</span>
+      <div class="stat-row">
+        <span class="stat-pill"><b>{total_hus}</b> historias propuestas</span>
+        <span class="stat-pill"><b>{len(EPICAS)}</b> épicas funcionales</span>
+        <span class="stat-pill"><b>2</b> roles iniciales</span>
       </div>
       <div class="hero-cta">
-        <a class="cta primary" href="#epicas">Ver las 10 épicas
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a class="cta ghost" href="#pendientes">Pendientes de validación</a>
+        <a class="btn-pill" href="#mapa">Explorar el mapa de épicas</a>
+        <a class="btn-pill ghost" href="docs/">Versión documentación</a>
       </div>
     </div>
   </section>
 
-  <section id="como-leer">
+  <section id="como-leer" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">1 · Cómo leer este documento</div>
-        <h2 class="sec-title">Las historias describen el comportamiento necesario, no el estado actual</h2>
-        <p class="sec-sub">Se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables de aceptación o rechazo · prioridad P0 (imprescindible para un MVP seguro y defendible) o P1 (importante, configurable o aplazable) · trazabilidad con la issue del backlog.</p>
+        <div class="sec-kicker">01 · Cómo leer este documento</div>
+        <h2 class="sec-title">Comportamiento necesario, no estado actual</h2>
+        <p class="sec-sub">Las historias se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables · prioridad P0 (imprescindible) o P1 (configurable o aplazable) · trazabilidad con la issue.</p>
       </div>
-
       <div class="actors reveal">
 {actors_html}
       </div>
-
-      <div class="callout reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
-        <span><strong>Reglas transversales:</strong> una recomendación no sustituye la decisión humana y el MVP no postula ofertas automáticamente. La fuente del requisito y la evidencia empresarial se conservan por separado (documento, localizador, fragmento y versión). Ausente o desconocido no equivale a cero; evidencia insuficiente no equivale a cumplimiento ni incumplimiento probado. Los documentos y textos de licitación son contenido no confiable, nunca instrucciones para el sistema. Archivos, datos personales, secretos y documentos internos permanecen fuera de Git y de logs; las pruebas usan fixtures sintéticas o anonimizadas.</span>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span><strong>Reglas transversales:</strong> una recomendación no sustituye la decisión humana y el MVP no postula ofertas automáticamente. La fuente del requisito y la evidencia empresarial se conservan por separado (documento, localizador, fragmento y versión). Ausente o desconocido no equivale a cero. Los documentos y textos de licitación son contenido no confiable, nunca instrucciones para el sistema. Archivos, datos personales, secretos y documentos internos permanecen fuera de Git y de logs.</span>
       </div>
     </div>
   </section>
 
-  <section id="flujo" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <section id="flujo">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">2 · Mapa del alcance</div>
+        <div class="sec-kicker">02 · Mapa del alcance</div>
         <h2 class="sec-title">Secuencia principal</h2>
-        <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo. Las dependencias del backlog siguen siendo obligatorias aunque una historia se lea de forma independiente.</p>
+        <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo.</p>
       </div>
+      <ol class="flow reveal">{flow_html}</ol>
+    </div>
+  </section>
 
-      <div class="flowgrid reveal" aria-label="Secuencia principal del MVP">
-{flow_html}
+  <section id="mapa" class="band-soft">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">03 · Mapa de épicas</div>
+        <h2 class="sec-title">Las {len(EPICAS)} épicas funcionales</h2>
+        <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las {total_hus} historias está en la versión documentación.</p>
+      </div>
+      <div class="tbl-wrap reveal">
+        <table class="doc-t">
+          <thead><tr><th>Épica</th><th>Capacidad</th><th>Historias</th><th>Issues</th><th>Cant.</th></tr></thead>
+          <tbody>
+{epic_map_rows}
+          </tbody>
+        </table>
+      </div>
+      <div class="hero-cta reveal" style="margin-top:22px">
+        <a class="btn-pill dark" href="docs/">Ver las {total_hus} historias completas</a>
       </div>
     </div>
   </section>
 
-  <section id="epicas">
+  <section id="pendientes" class="band-cream">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">2 · Mapa del alcance</div>
-        <h2 class="sec-title">Las 10 épicas funcionales</h2>
-        <p class="sec-sub">Cada épica agrupa historias de usuario y se vincula con las issues del backlog. Haz clic en una épica para ver sus historias.</p>
-      </div>
-
-      <div class="epics reveal">
-{epics_cards}
-      </div>
-    </div>
-  </section>
-
-  <section id="detalle" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-kicker">3 · Historias por épica</div>
-        <h2 class="sec-title">Las 44 historias, épica por épica</h2>
-        <p class="sec-sub">Cada historia incluye su narrativa, criterios de aceptación observables, prioridad y la issue del backlog que la implementa o valida.</p>
-      </div>
-
-{epics_detail}
-    </div>
-  </section>
-
-  <section id="pendientes">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-kicker">4 · Pendientes de validación con EAG</div>
-        <h2 class="sec-title">Decisiones pendientes antes de comprometer el alcance</h2>
+        <div class="sec-kicker">04 · Pendientes de validación</div>
+        <h2 class="sec-title">Decisiones antes de comprometer el alcance</h2>
         <p class="sec-sub">Estas decisiones condicionan historias concretas. Cada una tiene un responsable propuesto.</p>
       </div>
-
-      <div class="table-scroll reveal">
-        <table class="cmp">
-          <thead>
-            <tr>
-              <th scope="col">Decisión pendiente</th>
-              <th scope="col">Impacto en historias</th>
-              <th scope="col">Responsable propuesto</th>
-            </tr>
-          </thead>
+      <div class="tbl-wrap reveal">
+        <table class="doc-t">
+          <thead><tr><th>Decisión pendiente</th><th>Impacto en historias</th><th>Responsable propuesto</th></tr></thead>
           <tbody>
 {pend_rows}
           </tbody>
         </table>
       </div>
-
-      <div class="callout reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
-        <span><strong>Criterio de cierre del MVP:</strong> las 44 historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con pruebas reproducibles, revisión humana y dependencias técnicas aceptadas. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</span>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span><strong>Criterio de cierre del MVP:</strong> las {total_hus} historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con pruebas reproducibles, revisión humana y dependencias técnicas aceptadas. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</span>
       </div>
     </div>
   </section>
 
-  <section id="exclusiones" style="background:var(--bg-soft);border-top:1px solid var(--line)">
+  <section id="exclusiones">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">5 · Exclusiones explícitas</div>
+        <div class="sec-kicker">05 · Exclusiones explícitas</div>
         <h2 class="sec-title">Lo que este MVP no hace</h2>
         <p class="sec-sub">Límites declarados para evitar expectativas fuera de alcance.</p>
       </div>
-
-      <div class="hu reveal" style="max-width:900px">
-        <ul class="hu-crit" style="gap:9px">
+      <div class="tbl-wrap reveal" style="padding:24px 28px">
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:9px">
 {excl_lis}
         </ul>
       </div>
-
       <div class="callout warn reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
         <span><strong>Nota final:</strong> este documento debe revisarse con EAG antes de convertir las historias en compromiso de producto. Los estados de avance, integraciones y resultados del piloto se verifican por separado en las issues y evidencias de prueba.</span>
       </div>
     </div>
@@ -372,7 +330,7 @@ page = f'''<!DOCTYPE html>
 <footer>
   <div class="wrap foot">
     <span>EAG Ingenieros S.A.S. · Historias de usuario del MVP · Versión 1.0 · 7 de septiembre de 2026</span>
-    <span class="mono">riverosmejia/EAG-HU</span>
+    <span class="tnum"><a href="https://github.com/riverosmejia/EAG-HU">riverosmejia/EAG-HU</a> · <a href="docs/">documentación</a></span>
   </div>
 </footer>
 
@@ -397,14 +355,10 @@ page = f'''<!DOCTYPE html>
 </html>
 '''
 
-with open("/home/riveros/EAG-HU/index.html", "w", encoding="utf-8") as f:
+with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(page)
 
-# Verificación de integridad
 import re
-ids = re.findall(r'HU-\d+', page)
-unique_hus = sorted(set(ids), key=lambda x: int(x.split("-")[1]))
-print("HU únicas en el HTML:", len(unique_hus))
-print("Primeras:", unique_hus[:3], "Últimas:", unique_hus[-3:])
-assert len(unique_hus) == 44, "FALTAN HISTORIAS"
-print("OK: 44/44 historias presentes")
+hus = sorted(set(re.findall(r"HU-\d+", page)), key=lambda x: int(x.split("-")[1]))
+print("index.html generado:", os.path.getsize(os.path.join(OUT, "index.html")), "bytes")
+print("HUs referenciadas en mapa:", len(set(hus)))

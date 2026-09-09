@@ -4,142 +4,159 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EAG Ingenieros · Historias de Usuario del MVP</title>
-<meta name="description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales, 2 roles iniciales. Versión 1.0 · 7 de septiembre de 2026.">
+<meta name="description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales. Versión 1.0 · 7 de septiembre de 2026.">
 <meta property="og:title" content="EAG Ingenieros · Historias de Usuario del MVP">
 <meta property="og:description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 28 9v14L16 30 4 23V9z' fill='%230f766e'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#ffffff;--bg-soft:#f6f8f8;--bg-accent:#eef7f6;--ink:#10201e;--ink-2:#33423f;--muted:#64716e;
-  --line:#e3e8e7;--line-strong:#cdd6d4;--accent:#0f766e;--accent-strong:#0b5e58;--accent-soft:#e6f4f2;
-  --ok:#1a7f4e;--warn:#b45309;--danger:#b42318;--radius:14px;--radius-sm:9px;
-  --shadow-card:0 1px 2px rgba(16,32,30,.05);
-  --shadow-rec:0 18px 44px -18px rgba(15,118,110,.35),0 2px 6px rgba(16,32,30,.06);
-  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --primary:#533afd;--primary-deep:#4434d4;--primary-press:#2e2b8c;--primary-soft:#665efd;
+  --primary-subdued:#b9b9f9;--brand-dark:#1c1e54;
+  --ink:#0d253d;--ink-2:#273951;--mute:#64748d;
+  --canvas:#ffffff;--canvas-soft:#f6f9fc;--cream:#f5e9d4;
+  --hairline:#e3e8ee;--hairline-input:#a8c3de;
+  --ruby:#ea2261;--lemon:#9b6829;
+  --shadow-1:rgba(0,55,112,.08) 0 1px 3px;
+  --shadow-2:rgba(0,55,112,.08) 0 8px 24px, rgba(0,55,112,.04) 0 2px 6px;
+  --sans:'Inter','SF Pro Display',system-ui,-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:84px}
-body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
-::selection{background:var(--accent-soft)}
-a{color:var(--accent-strong);text-decoration:none}
+body{font-family:var(--sans);color:var(--ink);background:var(--canvas);font-weight:300;
+  font-size:15px;line-height:1.5;font-feature-settings:"ss01";-webkit-font-smoothing:antialiased}
+::selection{background:var(--primary-subdued)}
+a{color:var(--primary);text-decoration:none}
 a:hover{text-decoration:underline}
+code{font-family:var(--sans);font-weight:400;font-size:.85em;background:var(--canvas-soft);
+  border:1px solid var(--hairline);border-radius:4px;padding:1px 6px;color:var(--ink-2)}
+strong{font-weight:500}
 .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
-.mono{font-family:var(--mono)}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px}
-.brand .sub{color:var(--muted);font-weight:500}
-.topbar nav{display:flex;gap:22px;font-size:13.5px;font-weight:500}
+.tnum{font-feature-settings:"tnum";letter-spacing:-.2px}
+
+/* ---------- Topbar sobre mesh ---------- */
+.topbar{position:absolute;top:0;left:0;right:0;z-index:50}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:400;font-size:14.5px;letter-spacing:-.2px;color:var(--ink)}
+.brand .sub{color:var(--mute);font-weight:300}
+.topbar nav{display:flex;gap:22px;font-size:14px;font-weight:300}
 .topbar nav a{color:var(--ink-2)}
-.topbar nav .pill{font-family:var(--mono);font-size:11.5px;background:var(--accent-soft);color:var(--accent-strong);padding:6px 10px;border-radius:99px;margin-left:8px}
-.btn-print{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);border:1px solid var(--accent);padding:9px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s}
-.btn-print:hover{background:var(--accent-strong)}
-.hero{padding:72px 0 44px;background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%);border-bottom:1px solid var(--line)}
-.eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--accent)}
-.hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.08;letter-spacing:-1.2px;font-weight:700;margin:18px 0;max-width:820px}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p.lead{font-size:17.5px;color:var(--ink-2);max-width:780px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px;max-width:620px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow-card)}
-.stat .n{font-family:var(--mono);font-size:34px;font-weight:600;letter-spacing:-1px;color:var(--accent)}
-.stat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
-.drivers{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.drivers span{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);border:1px solid var(--line-strong);background:#fff;padding:8px 13px;border-radius:99px}
-.hero-cta{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap}
-.cta{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:var(--radius-sm)}
-.cta.primary{background:var(--accent);color:#fff}
-.cta.primary:hover{background:var(--accent-strong);text-decoration:none}
-.cta.ghost{border:1px solid var(--line-strong);color:var(--ink-2)}
-.cta.ghost:hover{background:var(--bg-soft);text-decoration:none}
+.btn-pill{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400;color:#fff;
+  background:var(--primary);border:none;padding:8px 16px;border-radius:9999px;cursor:pointer;transition:background .15s}
+.btn-pill:hover{background:var(--primary-deep)}
+.btn-pill:active{background:var(--primary-press)}
+.btn-pill.ghost{background:var(--canvas);color:var(--primary);border:1px solid var(--primary)}
+.btn-pill.ghost:hover{background:var(--canvas-soft)}
+.btn-pill.dark{background:var(--brand-dark)}
+.btn-pill.dark:hover{background:#16183f}
+
+/* ---------- Mesh hero ---------- */
+.hero{position:relative;padding:132px 0 72px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(42% 100% at 3% 45%, rgba(245,233,212,.95), transparent 60%),
+    radial-gradient(38% 90% at 24% 25%, rgba(249,150,80,.4), transparent 62%),
+    radial-gradient(44% 100% at 50% 40%, rgba(178,132,255,.45), transparent 65%),
+    radial-gradient(50% 115% at 77% 30%, rgba(83,58,253,.7), transparent 65%),
+    radial-gradient(36% 90% at 100% 50%, rgba(234,34,97,.5), transparent 60%);
+  filter:blur(4px)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;z-index:-1;
+  background:linear-gradient(180deg,transparent,var(--canvas))}
+.eyebrow{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--canvas);display:inline-flex;padding:4px 10px;border-radius:9999px;
+  border:1px solid var(--hairline);box-shadow:var(--shadow-1)}
+.hero h1{font-size:56px;font-weight:300;line-height:1.03;letter-spacing:-1.4px;margin:20px 0 18px;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--primary)}
+.hero p.lead{font-size:16px;color:var(--ink-2);max-width:740px;line-height:1.45}
+.stat-row{display:flex;gap:8px;margin-top:26px;flex-wrap:wrap}
+.stat-pill{background:var(--canvas);border:1px solid var(--hairline);border-radius:9999px;
+  padding:8px 16px;font-size:14px;color:var(--ink-2);box-shadow:var(--shadow-1);font-feature-settings:"tnum"}
+.stat-pill b{color:var(--primary-deep);font-weight:500;font-size:16px}
+.hero-cta{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- Secciones ---------- */
 section{padding:64px 0}
+.band-soft{background:var(--canvas-soft)}
+.band-cream{background:var(--cream)}
 .sec-head{margin-bottom:34px}
-.sec-kicker{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
-.sec-title{font-size:clamp(24px,3vw,34px);letter-spacing:-.6px;font-weight:700;margin-top:8px}
-.sec-sub{color:var(--muted);margin-top:10px;max-width:760px;font-size:15.5px}
-.callout{display:flex;gap:12px;align-items:flex-start;margin-top:22px;padding:16px 18px;background:var(--accent-soft);border:1px solid rgba(15,118,110,.25);border-radius:var(--radius-sm);font-size:14px;color:var(--ink-2)}
-.callout.warn{background:#fff8ec;border-color:rgba(180,83,9,.3)}
-.callout.warn svg{stroke:var(--warn)}
-.callout svg{flex:none;margin-top:2px;stroke:var(--accent)}
-.flowgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:8px}
-.flow{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-card)}
-.flow .step{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px;color:var(--accent)}
-.flow .what{font-size:14.5px;font-weight:600;line-height:1.3}
-.flow .why{font-size:12px;color:var(--muted);line-height:1.45}
+.sec-kicker{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--primary-deep);
+  background:var(--primary-subdued);display:inline-flex;padding:3px 10px;border-radius:9999px;margin-bottom:12px}
+.sec-title{font-size:32px;font-weight:300;letter-spacing:-.64px;line-height:1.1}
+.sec-sub{color:var(--mute);margin-top:10px;max-width:720px;font-size:15px}
+
+/* ---------- Actores ---------- */
 .actors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.actor{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-card)}
-.actor .icon{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.actor h3{font-size:15.5px;font-weight:700}
-.actor .role{font-size:11px;font-family:var(--mono);color:var(--accent-strong);margin-top:2px;letter-spacing:.8px}
-.actor p{font-size:13px;color:var(--ink-2);margin-top:8px;line-height:1.5}
-.epics{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-.epic{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px;color:var(--ink);transition:border-color .15s,transform .15s}
-.epic:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
-.epic .e-no{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:1.2px;color:var(--muted)}
-.epic h3{font-size:14.5px;font-weight:700;line-height:1.25}
-.epic .hu-range{font-family:var(--mono);font-size:11px;color:var(--accent-strong);margin-top:auto}
-.epic .issue{font-family:var(--mono);font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
-.detail{display:grid;grid-template-columns:64px 1fr;gap:22px;padding:36px 0;border-top:1px solid var(--line)}
-.detail .dnum{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent-strong);padding-top:3px}
-.detail h3{font-size:20px;letter-spacing:-.3px;font-weight:700}
-.detail .dsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:3px}
-.detail>p{margin-top:12px;font-size:15px;color:var(--ink-2);max-width:860px}
-.hus{margin-top:20px;display:flex;flex-direction:column;gap:12px;max-width:900px}
-.hu{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px}
-.hu-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hu-id{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent-strong)}
-.pill-p0,.pill-p1{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.6px;padding:3px 8px;border-radius:99px}
-.pill-p0{background:#e8f6ef;color:var(--ok);border:1px solid rgba(26,127,78,.25)}
-.pill-p1{background:#fff8ec;color:var(--warn);border:1px solid rgba(180,83,9,.25)}
-.pill-issue{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--bg-soft);padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
-.hu-narr{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.5}
-.hu-narr em{font-style:normal;color:var(--accent-strong);font-weight:600}
-.hu-crit{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
-.hu-crit li{font-size:13px;color:var(--ink-2);padding-left:20px;position:relative;line-height:1.5}
-.hu-crit li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--accent)}
-.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
-table.cmp{width:100%;border-collapse:collapse;min-width:760px}
-table.cmp th,table.cmp td{padding:13px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:13.5px}
-table.cmp thead th{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--bg-soft);position:sticky;top:60px;z-index:2}
-table.cmp td.rowhead{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--muted);background:var(--bg-soft);width:170px}
-table.cmp tbody tr:last-child td{border-bottom:none}
-table.cmp td .mono{font-size:12px;color:var(--ink-2)}
-footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:34px 0;font-size:13px;color:var(--muted)}
+.actor{background:var(--canvas);border:1px solid var(--hairline);border-radius:12px;padding:28px;box-shadow:var(--shadow-1)}
+.actor h3{font-size:20px;font-weight:300;letter-spacing:-.2px}
+.actor .role{display:inline-block;font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--primary-subdued);border-radius:9999px;padding:3px 8px;margin:8px 0}
+.actor p{font-size:14px;color:var(--ink-2);line-height:1.45}
+
+/* ---------- Flow ---------- */
+ol.flow{list-style:none;counter-reset:paso;columns:2;column-gap:48px;margin-top:8px}
+ol.flow li{counter-increment:paso;position:relative;padding:9px 0 9px 46px;border-bottom:1px solid var(--hairline);
+  break-inside:avoid;font-size:14.5px;color:var(--ink-2)}
+ol.flow li::before{content:counter(paso,decimal-leading-zero);position:absolute;left:0;top:9px;width:30px;height:30px;
+  border-radius:9999px;background:var(--brand-dark);color:#fff;font-size:10px;font-weight:400;font-feature-settings:"tnum";
+  display:flex;align-items:center;justify-content:center}
+ol.flow strong{display:inline;color:var(--ink);font-weight:500}
+ol.flow span{display:block;font-size:13px;color:var(--mute)}
+
+/* ---------- Mapa épicas ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--hairline);border-radius:12px;background:var(--canvas);box-shadow:var(--shadow-1)}
+table.doc-t{width:100%;border-collapse:collapse;font-size:14px;font-weight:300;min-width:720px}
+table.doc-t th,table.doc-t td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--hairline)}
+table.doc-t thead th{font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--mute);background:var(--canvas-soft)}
+table.doc-t tbody tr:last-child td{border-bottom:none}
+table.doc-t td.rowhead{font-weight:400;color:var(--primary-deep);background:var(--canvas-soft);white-space:nowrap}
+table.doc-t td.tnum{font-feature-settings:"tnum";letter-spacing:-.2px}
+table.doc-t td a{font-weight:400}
+.callout{display:flex;gap:12px;align-items:flex-start;margin-top:20px;padding:16px 18px;border-radius:12px;
+  font-size:14px;line-height:1.5;border:1px solid var(--hairline)}
+.callout svg{width:18px;height:18px;flex:none;margin-top:2px}
+.callout.note{background:var(--canvas-soft);color:var(--ink-2)}
+.callout.note svg{stroke:var(--primary)}
+.callout.cream{background:var(--cream);color:var(--ink)}
+.callout.cream svg{stroke:var(--lemon)}
+.callout.warn{background:var(--canvas);color:var(--ink-2);border-color:var(--hairline)}
+.callout.warn svg{stroke:var(--lemon)}
+
+/* ---------- Footer ---------- */
+footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64px 0;font-size:13px;color:var(--mute)}
 .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot a{color:var(--mute)}
+.foot a:hover{color:var(--primary)}
+
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
-@media (max-width:1080px){.epics{grid-template-columns:repeat(3,1fr)}.flowgrid{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:980px){.actors{grid-template-columns:repeat(2,1fr)}.topbar nav{display:none}}
+
+@media (max-width:960px){
+  .topbar nav{display:none}
+  .hero{padding:104px 0 56px}
+  .hero h1{font-size:40px;letter-spacing:-1px}
+  .actors{grid-template-columns:repeat(2,1fr)}
+  ol.flow{columns:1}
+}
 @media (max-width:640px){
- .hero{padding:52px 0 30px}section{padding:46px 0}
- .detail{grid-template-columns:1fr;gap:10px}
- .stats{grid-template-columns:repeat(3,1fr)}
- .epics{grid-template-columns:1fr 1fr}
- .flowgrid{grid-template-columns:1fr 1fr}
- .actors{grid-template-columns:1fr}
- .brand .sub{display:none}
+  .hero h1{font-size:34px;letter-spacing:-.8px}
+  section{padding:46px 0}
+  .actors{grid-template-columns:1fr}
 }
 @media print{
- @page{margin:14mm 12mm}
- body{font-size:11.5px}
- .topbar{position:static;backdrop-filter:none}
- .btn-print,.hero-cta,.topbar nav{display:none!important}
- .hero{padding:26px 0 14px;background:none}
- .reveal{opacity:1;transform:none}
- .epics{grid-template-columns:repeat(3,1fr)}
- .actors{grid-template-columns:repeat(2,1fr)}
- .flowgrid{grid-template-columns:repeat(5,1fr)}
- .flow,.actor,.hu{break-inside:avoid}
- .detail{padding:14px 0;break-inside:avoid}
- .table-scroll{overflow:visible}table.cmp{min-width:0}table.cmp thead th{position:static}
- footer{display:none}
- *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.hero-cta,.topbar nav{display:none!important}
+  .hero{padding:26px 0 14px}
+  .hero::before,.hero::after{display:none}
+  .reveal{opacity:1;transform:none}
+  .actors{grid-template-columns:repeat(2,1fr)}
+  ol.flow{columns:2}
+  .hu,.adm,.tbl-wrap,.actor{break-inside:avoid;box-shadow:none}
+  section{padding:18px 0}
+  footer{display:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -148,20 +165,17 @@ footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:34px 0
 <header class="topbar">
   <div class="wrap topbar-inner">
     <div class="brand">
-      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14L16 30 4 23V9z" fill="#0f766e"/><path d="M11 16.5l3.5 3.5L21 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 30 10v12L16 30 2 22V10z" fill="#533afd"/><path d="M11 16.5l3.5 3.5L21 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>EAG Ingenieros <span class="sub">· MVP · Historias de Usuario</span></span>
     </div>
     <nav aria-label="Secciones">
       <a href="#como-leer">Cómo leerlo</a>
       <a href="#flujo">Flujo</a>
-      <a href="#epicas">Épicas <span class="pill">10</span></a>
-      <a href="#detalle">Historias <span class="pill">44</span></a>
+      <a href="#mapa">Épicas</a>
       <a href="#pendientes">Pendientes</a>
+      <a href="docs/" style="color:var(--primary);font-weight:400">Documentación →</a>
     </nav>
-    <button class="btn-print" onclick="window.print()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Exportar PDF
-    </button>
+    <a class="btn-pill" href="docs/">Ver documentación</a>
   </div>
 </header>
 
@@ -171,742 +185,123 @@ footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:34px 0
       <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 1.0 · 7 de septiembre de 2026</div>
       <h1>Historias de usuario del <em>MVP</em></h1>
       <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Este documento es una <strong>propuesta del equipo</strong>: no demuestra aprobación empresarial, cobertura completa de SECOP, integración productiva ni mejoras medidas. Toda decisión final requiere revisión humana y validación de EAG.</p>
-      <div class="stats" aria-label="Cifras del alcance">
-        <div class="stat"><div class="n">44</div><div class="l">historias propuestas</div></div>
-        <div class="stat"><div class="n">10</div><div class="l">épicas funcionales</div></div>
-        <div class="stat"><div class="n">2</div><div class="l">roles iniciales</div></div>
-      </div>
-      <div class="drivers" aria-label="Base documental">
-        <span>CONTEXTO.md</span>
-        <span>CASO_DE_USO.md</span>
-        <span>MATRIZ_DE_PERMISOS.md</span>
-        <span>BACKLOG.md</span>
-        <span>MVP-01 a MVP-14</span>
+      <div class="stat-row">
+        <span class="stat-pill"><b>44</b> historias propuestas</span>
+        <span class="stat-pill"><b>10</b> épicas funcionales</span>
+        <span class="stat-pill"><b>2</b> roles iniciales</span>
       </div>
       <div class="hero-cta">
-        <a class="cta primary" href="#epicas">Ver las 10 épicas
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a class="cta ghost" href="#pendientes">Pendientes de validación</a>
+        <a class="btn-pill" href="#mapa">Explorar el mapa de épicas</a>
+        <a class="btn-pill ghost" href="docs/">Versión documentación</a>
       </div>
     </div>
   </section>
 
-  <section id="como-leer">
+  <section id="como-leer" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">1 · Cómo leer este documento</div>
-        <h2 class="sec-title">Las historias describen el comportamiento necesario, no el estado actual</h2>
-        <p class="sec-sub">Se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables de aceptación o rechazo · prioridad P0 (imprescindible para un MVP seguro y defendible) o P1 (importante, configurable o aplazable) · trazabilidad con la issue del backlog.</p>
+        <div class="sec-kicker">01 · Cómo leer este documento</div>
+        <h2 class="sec-title">Comportamiento necesario, no estado actual</h2>
+        <p class="sec-sub">Las historias se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables · prioridad P0 (imprescindible) o P1 (configurable o aplazable) · trazabilidad con la issue.</p>
       </div>
-
       <div class="actors reveal">
-<article class="actor">
-<div class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></div>
-<h3>Analista</h3>
-<div class="role">ROL OPERATIVO</div>
-<p>Busca oportunidades, reúne documentos, revisa requisitos, corrige resultados y prepara el borrador.</p>
-</article>
-<article class="actor">
-<div class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-<h3>Administrador</h3>
-<div class="role">ROL DE GESTIÓN</div>
-<p>Gestiona acceso, configuración compartida, perfil empresarial y operación autorizada.</p>
-</article>
-<article class="actor">
-<div class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
-<h3>Aprobador / Gerencia</h3>
-<div class="role">ROL DECISOR</div>
-<p>Aprueba una versión del análisis y toma la decisión empresarial. Su designación exacta está pendiente.</p>
-</article>
-<article class="actor">
-<div class="icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
-<h3>Sistema / Equipo operador</h3>
-<div class="role">ROL TÉCNICO</div>
-<p>Ejecuta procesos controlados y mantiene seguridad, trazabilidad, retención y recuperación.</p>
-</article>
+<div class='actor'><h3>Analista</h3><span class='role'>ROL OPERATIVO</span><p>Busca oportunidades, reúne documentos, revisa requisitos, corrige resultados y prepara el borrador.</p></div>
+<div class='actor'><h3>Administrador</h3><span class='role'>ROL DE GESTIÓN</span><p>Gestiona acceso, configuración compartida, perfil empresarial y operación autorizada.</p></div>
+<div class='actor'><h3>Aprobador / Gerencia</h3><span class='role'>ROL DECISOR</span><p>Aprueba una versión del análisis y toma la decisión empresarial. Su designación exacta está pendiente.</p></div>
+<div class='actor'><h3>Sistema / Equipo operador</h3><span class='role'>ROL TÉCNICO</span><p>Ejecuta procesos controlados y mantiene seguridad, trazabilidad, retención y recuperación.</p></div>
       </div>
-
-      <div class="callout reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
-        <span><strong>Reglas transversales:</strong> una recomendación no sustituye la decisión humana y el MVP no postula ofertas automáticamente. La fuente del requisito y la evidencia empresarial se conservan por separado (documento, localizador, fragmento y versión). Ausente o desconocido no equivale a cero; evidencia insuficiente no equivale a cumplimiento ni incumplimiento probado. Los documentos y textos de licitación son contenido no confiable, nunca instrucciones para el sistema. Archivos, datos personales, secretos y documentos internos permanecen fuera de Git y de logs; las pruebas usan fixtures sintéticas o anonimizadas.</span>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span><strong>Reglas transversales:</strong> una recomendación no sustituye la decisión humana y el MVP no postula ofertas automáticamente. La fuente del requisito y la evidencia empresarial se conservan por separado (documento, localizador, fragmento y versión). Ausente o desconocido no equivale a cero. Los documentos y textos de licitación son contenido no confiable, nunca instrucciones para el sistema. Archivos, datos personales, secretos y documentos internos permanecen fuera de Git y de logs.</span>
       </div>
     </div>
   </section>
 
-  <section id="flujo" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <section id="flujo">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">2 · Mapa del alcance</div>
+        <div class="sec-kicker">02 · Mapa del alcance</div>
         <h2 class="sec-title">Secuencia principal</h2>
-        <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo. Las dependencias del backlog siguen siendo obligatorias aunque una historia se lea de forma independiente.</p>
+        <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo.</p>
       </div>
-
-      <div class="flowgrid reveal" aria-label="Secuencia principal del MVP">
-<div class="flow"><span class="step">PASO 1</span><span class="what">SECOP II</span><span class="why">Sincronización y detalle de oportunidades oficiales</span></div>
-<div class="flow"><span class="step">PASO 2</span><span class="what">Expediente</span><span class="why">Documentos con origen, versión y cuarentena</span></div>
-<div class="flow"><span class="step">PASO 3</span><span class="what">Extracción</span><span class="why">Texto y OCR trazables por localizador</span></div>
-<div class="flow"><span class="step">PASO 4</span><span class="what">Requisitos</span><span class="why">Extracción estructurada con IA y citas validadas</span></div>
-<div class="flow"><span class="step">PASO 5</span><span class="what">Perfil EAG</span><span class="why">Evidencias empresariales versionadas</span></div>
-<div class="flow"><span class="step">PASO 6</span><span class="what">Comparación</span><span class="why">Propuesta explicable y corregible</span></div>
-<div class="flow"><span class="step">PASO 7</span><span class="what">Revisión</span><span class="why">Estados controlados y justificación</span></div>
-<div class="flow"><span class="step">PASO 8</span><span class="what">Aprobación</span><span class="why">Solo después de revisión humana</span></div>
-<div class="flow"><span class="step">PASO 9</span><span class="what">PDF</span><span class="why">Informe aprobado y trazable</span></div>
-<div class="flow"><span class="step">PASO 10</span><span class="what">Correo autorizado</span><span class="why">Solo a destinatarios configurados</span></div>
-      </div>
+      <ol class="flow reveal"><li><strong>SECOP II</strong><span>— Sincronización y detalle de oportunidades oficiales</span></li><li><strong>Expediente</strong><span>— Documentos con origen, versión y cuarentena</span></li><li><strong>Extracción</strong><span>— Texto y OCR trazables por localizador</span></li><li><strong>Requisitos</strong><span>— Extracción estructurada con IA y citas validadas</span></li><li><strong>Perfil EAG</strong><span>— Evidencias empresariales versionadas</span></li><li><strong>Comparación</strong><span>— Propuesta explicable y corregible</span></li><li><strong>Revisión</strong><span>— Estados controlados y justificación</span></li><li><strong>Aprobación</strong><span>— Solo después de revisión humana</span></li><li><strong>PDF</strong><span>— Informe aprobado y trazable</span></li><li><strong>Correo autorizado</strong><span>— Solo a destinatarios configurados</span></li></ol>
     </div>
   </section>
 
-  <section id="epicas">
+  <section id="mapa" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">2 · Mapa del alcance</div>
+        <div class="sec-kicker">03 · Mapa de épicas</div>
         <h2 class="sec-title">Las 10 épicas funcionales</h2>
-        <p class="sec-sub">Cada épica agrupa historias de usuario y se vincula con las issues del backlog. Haz clic en una épica para ver sus historias.</p>
+        <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las 44 historias está en la versión documentación.</p>
       </div>
-
-      <div class="epics reveal">
-<a class="epic" href="#ee1">
-<span class="e-no">ÉPICA E1</span>
-<h3>Acceso, roles y aislamiento</h3>
-<span class="hu-range">HU-01 → HU-04</span>
-<span class="issue">MVP-04</span>
-</a>
-<a class="epic" href="#ee2">
-<span class="e-no">ÉPICA E2</span>
-<h3>Oportunidades SECOP II</h3>
-<span class="hu-range">HU-05 → HU-10</span>
-<span class="issue">MVP-02 · MVP-05 · MVP-06</span>
-</a>
-<a class="epic" href="#ee3">
-<span class="e-no">ÉPICA E3</span>
-<h3>Expediente documental seguro</h3>
-<span class="hu-range">HU-11 → HU-15</span>
-<span class="issue">MVP-07</span>
-</a>
-<a class="epic" href="#ee4">
-<span class="e-no">ÉPICA E4</span>
-<h3>Extracción de texto y OCR</h3>
-<span class="hu-range">HU-16 → HU-19</span>
-<span class="issue">MVP-08</span>
-</a>
-<a class="epic" href="#ee5">
-<span class="e-no">ÉPICA E5</span>
-<h3>Perfil y evidencias empresariales</h3>
-<span class="hu-range">HU-20 → HU-24</span>
-<span class="issue">MVP-09</span>
-</a>
-<a class="epic" href="#ee6">
-<span class="e-no">ÉPICA E6</span>
-<h3>Extracción estructurada de requisitos</h3>
-<span class="hu-range">HU-25 → HU-28</span>
-<span class="issue">MVP-10</span>
-</a>
-<a class="epic" href="#ee7">
-<span class="e-no">ÉPICA E7</span>
-<h3>Comparación, revisión y aprobación humana</h3>
-<span class="hu-range">HU-29 → HU-34</span>
-<span class="issue">MVP-11</span>
-</a>
-<a class="epic" href="#ee8">
-<span class="e-no">ÉPICA E8</span>
-<h3>Informe y comunicación controlada</h3>
-<span class="hu-range">HU-35 → HU-37</span>
-<span class="issue">MVP-12</span>
-</a>
-<a class="epic" href="#ee9">
-<span class="e-no">ÉPICA E9</span>
-<h3>Retención, operación y recuperación</h3>
-<span class="hu-range">HU-38 → HU-41</span>
-<span class="issue">MVP-13</span>
-</a>
-<a class="epic" href="#ee10">
-<span class="e-no">ÉPICA E10</span>
-<h3>Piloto, medición y decisión de lanzamiento</h3>
-<span class="hu-range">HU-42 → HU-44</span>
-<span class="issue">MVP-14</span>
-</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="detalle" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-kicker">3 · Historias por épica</div>
-        <h2 class="sec-title">Las 44 historias, épica por épica</h2>
-        <p class="sec-sub">Cada historia incluye su narrativa, criterios de aceptación observables, prioridad y la issue del backlog que la implementa o valida.</p>
-      </div>
-
-<article class="detail reveal" id="ee1">
-<div class="dnum">E1</div>
-<div>
-<h3>Acceso, roles y aislamiento</h3>
-<div class="dsub">MVP-04 · 4 historias</div>
-<p>Permitir el uso del sistema solo a personas invitadas, con dos roles y controles efectivos en backend y datos.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-01</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-04</span></div>
-<p class="hu-narr">Como <em>Usuario invitado</em>, quiero <em>acceder mediante un enlace de autenticación válido</em>, para usar el sistema sin registro público ni contraseña gestionada por la aplicación.</p>
-<ul class="hu-crit">
-<li>El acceso exige una invitación vigente y una sesión válida.</li>
-<li>Un token ausente, inválido o vencido recibe 401.</li>
-<li>La interfaz no expone registro público ni permite elegir rol u organización.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-02</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-04</span></div>
-<p class="hu-narr">Como <em>Usuario autenticado</em>, quiero <em>consultar mi sesión y cerrar sesión</em>, para confirmar mi identidad, rol y pertenencia antes de trabajar.</p>
-<ul class="hu-crit">
-<li>La sesión muestra únicamente identidad y pertenencia propias.</li>
-<li>El backend valida firma, expiración, issuer y audience configurados.</li>
-<li>Tras retirar la membresía, las rutas protegidas dejan de autorizar al usuario; la limitación del TTL del proveedor queda visible.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-03</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-04</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>crear, revocar y consultar invitaciones de EAG</em>, para controlar quién puede ingresar a la organización.</p>
-<ul class="hu-crit">
-<li>Solo el administrador ejecuta estas acciones desde el backend.</li>
-<li>El cliente no puede escoger role ni organization_id en el cuerpo.</li>
-<li>Cada acción genera auditoría sin tokens, secretos ni correos en metadata.</li>
-<li>El reenvío solo se habilita cuando exista una operación de proveedor comprobada; mientras tanto se informa como no disponible.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-04</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-04</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>aplicar permisos por rol y recurso</em>, para evitar acceso horizontal, escalada de privilegios y exposición entre organizaciones.</p>
-<ul class="hu-crit">
-<li>Un usuario autenticado sin permiso recibe 403.</li>
-<li>El rol y la organización se resuelven en el servidor, no desde claims o campos confiados al navegador.</li>
-<li>Las pruebas negativas cubren recursos ajenos, escritura directa y claves privilegiadas en cliente o logs.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee2">
-<div class="dnum">E2</div>
-<div>
-<h3>Oportunidades SECOP II</h3>
-<div class="dsub">MVP-02 · MVP-05 · MVP-06 · 6 historias</div>
-<p>Incorporar oportunidades oficiales de forma idempotente y facilitar su búsqueda sin inventar cobertura ni datos.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-05</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-02 / MVP-05</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>sincronizar oportunidades desde los conjuntos oficiales verificados</em>, para mantener un catálogo trazable a SECOP II.</p>
-<ul class="hu-crit">
-<li>Cada oportunidad conserva ID, enlace, fuente, campos originales relevantes y fecha de consulta.</li>
-<li>La consulta usa filtros permitidos, paginación, timeout, reintentos limitados y manejo de cuota.</li>
-<li>Una ejecución de red acotada se distingue de fixtures y mocks.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-06</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-05</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>ejecutar una sincronización manual autorizada</em>, para actualizar el catálogo cuando sea necesario y observar su resultado.</p>
-<ul class="hu-crit">
-<li>Solo un rol autorizado puede iniciar la operación.</li>
-<li>Repetir o reintentar un lote no crea duplicados.</li>
-<li>Éxitos parciales, 429, timeouts y registros pendientes quedan visibles y reanudables.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-07</span><span class="pill-p1">P1</span><span class="pill-issue">MVP-05</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>ejecutar una sincronización periódica incremental</em>, para detectar cambios tardíos sin recorrer indiscriminadamente toda la fuente.</p>
-<ul class="hu-crit">
-<li>Horario, zona horaria y ventana incremental son configurables.</li>
-<li>El campo temporal usado corresponde al esquema real verificado.</li>
-<li>La propuesta de 06:00 America/Bogota y 7 días no se activa como decisión definitiva sin validación.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-08</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-06</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>listar, ordenar, paginar y filtrar oportunidades</em>, para encontrar casos relevantes para revisión.</p>
-<ul class="hu-crit">
-<li>Filtros y resultados provienen de la API, sin datos mock en producción.</li>
-<li>Se muestran carga, vacío, error y datos desactualizados.</li>
-<li>Los controles son operables con teclado y en pantalla estrecha.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-09</span><span class="pill-p1">P1</span><span class="pill-issue">MVP-06</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>guardar y reutilizar filtros de trabajo</em>, para repetir búsquedas frecuentes con criterios consistentes.</p>
-<ul class="hu-crit">
-<li>Solo se ofrecen campos disponibles y verificados.</li>
-<li>Los filtros personales se distinguen de la configuración compartida.</li>
-<li>Solo usuarios autorizados modifican filtros compartidos de EAG.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-10</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-06</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>abrir el detalle de una oportunidad y volver al listado</em>, para examinar sus datos oficiales sin perder el contexto de búsqueda.</p>
-<ul class="hu-crit">
-<li>El detalle muestra ID, enlace oficial, fuente y última sincronización.</li>
-<li>Datos ausentes se presentan como desconocidos, no como cero.</li>
-<li>Al volver se conservan filtros, orden y página.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee3">
-<div class="dnum">E3</div>
-<div>
-<h3>Expediente documental seguro</h3>
-<div class="dsub">MVP-07 · 5 historias</div>
-<p>Reunir documentos de la oportunidad con controles de seguridad, versiones y faltantes explícitos.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-11</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-07</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>obtener los documentos disponibles desde SECOP II</em>, para formar el expediente de la oportunidad con su origen comprobable.</p>
-<ul class="hu-crit">
-<li>La descarga usa dominios permitidos, timeout, tamaño máximo y redirecciones validadas.</li>
-<li>Cada archivo conserva origen, hash, versión, fecha y estado.</li>
-<li>Descarga encontrada no se presenta como expediente completo.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-12</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-07</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>cargar documentos complementarios de una oportunidad SECOP II</em>, para completar el expediente cuando la fuente oficial no permita obtenerlos.</p>
-<ul class="hu-crit">
-<li>La carga manual exige oportunidad oficial existente y permiso sobre ella.</li>
-<li>Se aceptan inicialmente PDF, DOCX y XLSX válidos; ZIP se rechaza salvo controles seguros explícitos.</li>
-<li>El origen manual queda diferenciado del origen SECOP.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-13</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-07</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>validar y poner en cuarentena cada archivo</em>, para impedir que contenido peligroso o simulado avance al procesamiento.</p>
-<ul class="hu-crit">
-<li>Se validan extensión, firma/MIME, nombre seguro y límites configurables.</li>
-<li>Se bloquean ejecutables, macros, path traversal, tipo simulado y SSRF.</li>
-<li>Un fallo del antivirus no equivale a archivo limpio; un archivo en cuarentena no se procesa.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-14</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-07</span></div>
-<p class="hu-narr">Como <em>Usuario autorizado</em>, quiero <em>consultar o descargar documentos privados</em>, para revisar evidencia sin exponerla públicamente.</p>
-<ul class="hu-crit">
-<li>El backend autoriza cada recurso y el almacenamiento permanece privado.</li>
-<li>Los enlaces firmados tienen vida breve y no se registran con contenido sensible.</li>
-<li>Las pruebas cubren acceso permitido y denegado.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-15</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-07</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>ver el inventario, las versiones y los documentos faltantes</em>, para saber si el expediente permite un análisis defendible.</p>
-<ul class="hu-crit">
-<li>Cada elemento muestra origen, versión, estado de lectura y retención.</li>
-<li>Los documentos esperados pero ausentes se registran como faltantes.</li>
-<li>Un expediente incompleto limita las conclusiones y no se interpreta como ausencia de requisitos.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee4">
-<div class="dnum">E4</div>
-<div>
-<h3>Extracción de texto y OCR</h3>
-<div class="dsub">MVP-08 · 4 historias</div>
-<p>Convertir archivos aprobados en texto trazable sin ocultar fallos ni mezclar versiones.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-16</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-08</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>extraer texto de PDF, DOCX y XLSX aprobados</em>, para habilitar análisis posterior conservando la estructura de origen.</p>
-<ul class="hu-crit">
-<li>Fixtures sintéticas por formato producen texto y localizadores verificables.</li>
-<li>El proceso respeta límites de páginas, memoria, tiempo y reintentos.</li>
-<li>Archivos corruptos, cifrados o fuera de presupuesto terminan con error visible y recuperable.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-17</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-08</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>aplicar OCR básico cuando un PDF no tenga texto suficiente</em>, para recuperar contenido de escaneados sin fingir precisión.</p>
-<ul class="hu-crit">
-<li>OCR se activa por un criterio explícito y configurable.</li>
-<li>El resultado conserva página y advertencias de calidad.</li>
-<li>Texto vacío o OCR deficiente pasa a revisión manual, no a éxito silencioso.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-18</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-08</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>consultar estados y advertencias de extracción</em>, para identificar qué documento requiere reemplazo, reintento o revisión humana.</p>
-<ul class="hu-crit">
-<li>Se distinguen pendiente, procesando, completado con advertencias y fallido.</li>
-<li>La causa y el siguiente paso se muestran sin contenido sensible en logs.</li>
-<li>Un reintento controlado no duplica trabajo completado para el mismo hash y versión.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-19</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-08</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>navegar del texto extraído a su localizador</em>, para verificar cada fragmento contra documento, página, sección o celda.</p>
-<ul class="hu-crit">
-<li>Documento, localizador y versión acompañan cada fragmento.</li>
-<li>El localizador permite comprobación manual en una muestra autorizada.</li>
-<li>Reprocesar una versión nueva no modifica silenciosamente resultados anteriores.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee5">
-<div class="dnum">E5</div>
-<div>
-<h3>Perfil y evidencias empresariales</h3>
-<div class="dsub">MVP-09 · 5 historias</div>
-<p>Mantener una fuente empresarial autorizada, versionada y verificable para las comparaciones.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-20</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-09</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>registrar experiencia y contratos de EAG</em>, para sustentar requisitos de experiencia con datos y soportes.</p>
-<ul class="hu-crit">
-<li>Se registran objeto/especialidad, rol, fechas, valor/moneda cuando aplique y soporte.</li>
-<li>Cada evidencia tiene documento, localizador, versión y vigencia o queda pendiente.</li>
-<li>Datos desconocidos no se convierten en cero.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-21</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-09</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>registrar personal y sus credenciales</em>, para contrastar perfiles requeridos sin exponer datos innecesarios.</p>
-<ul class="hu-crit">
-<li>Se incluyen identificador interno, rol, formación, experiencia y certificaciones/vigencias pertinentes.</li>
-<li>El acceso sigue la matriz de permisos y minimiza datos personales.</li>
-<li>Un perfil incompleto conduce a pendiente o revisión, no a incapacidad definitiva.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-22</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-09</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>registrar capacidades, equipos y disponibilidad acreditada</em>, para evaluar requisitos técnicos y operativos con soporte.</p>
-<ul class="hu-crit">
-<li>Tipo, cantidad, características y disponibilidad usan unidades explícitas.</li>
-<li>La evidencia se marca pendiente o verificada por revisión humana.</li>
-<li>Una afirmación sin soporte no puede sustentar un cumple.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-23</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-09</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>registrar información financiera, legal y documental</em>, para comparar indicadores y vigencias exigidos por una oportunidad.</p>
-<ul class="hu-crit">
-<li>Período, valores, moneda/unidad, fórmula y soporte quedan identificados.</li>
-<li>Las fechas y números se validan; vacío, desconocido y cero son distintos.</li>
-<li>Solo se exponen los datos necesarios al rol autorizado.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-24</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-09</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>editar el perfil creando una nueva versión e historial</em>, para preservar qué evidencia se usó en cada análisis.</p>
-<ul class="hu-crit">
-<li>La edición guarda autor, fecha, motivo y estado pendiente/verificado.</li>
-<li>Los análisis existentes mantienen referencia a la versión comparada.</li>
-<li>La política de retención del perfil maestro se distingue de la de documentos de oportunidad.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee6">
-<div class="dnum">E6</div>
-<div>
-<h3>Extracción estructurada de requisitos</h3>
-<div class="dsub">MVP-10 · 4 historias</div>
-<p>Identificar requisitos mediante un adaptador de IA, conservando evidencia, límites y revisión.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-25</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-10</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>obtener requisitos estructurados del expediente</em>, para reducir lectura inicial sin perder categorías, condiciones ni fuente.</p>
-<ul class="hu-crit">
-<li>La salida cumple un esquema tipado y no decide participación ni cumplimiento final.</li>
-<li>Cada requisito incluye categoría, texto, documento, localizador, fragmento y versión.</li>
-<li>Salida inválida, truncada o ambigua se rechaza o marca para revisión.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-26</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-10</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>validar las citas de cada requisito contra el texto fuente</em>, para evitar requisitos inventados o referencias inexistentes.</p>
-<ul class="hu-crit">
-<li>Fragmento y localizador deben encontrarse o justificarse mediante una validación reproducible.</li>
-<li>Una alucinación de fuente bloquea el requisito automático.</li>
-<li>Los documentos se tratan como datos no confiables; instrucciones embebidas no cambian las reglas del sistema.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-27</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-10</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>configurar el proveedor y los límites operativos de IA</em>, para controlar coste, repetición y tratamiento de información.</p>
-<ul class="hu-crit">
-<li>Modelo, prompt, esquema y configuración quedan versionados sin contenido sensible en logs.</li>
-<li>Se limitan tokens, lotes, concurrencia, reintentos y llamadas repetidas por hash/versión.</li>
-<li>El envío de documentos internos exige autorización empresarial específica y secretos solo en backend.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-28</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-10</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>ver advertencias e incertidumbres de extracción</em>, para saber qué requisito necesita lectura humana.</p>
-<ul class="hu-crit">
-<li>Se muestran ambigüedad, evidencia faltante, error de proveedor y posibles conflictos.</li>
-<li>La ausencia de salida del modelo no se interpreta como ausencia de requisitos.</li>
-<li>La evaluación real se diferencia de pruebas con mocks y reporta tamaño de muestra.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee7">
-<div class="dnum">E7</div>
-<div>
-<h3>Comparación, revisión y aprobación humana</h3>
-<div class="dsub">MVP-11 · 6 historias</div>
-<p>Producir un borrador explicable y corregible, sin sustituir la decisión empresarial.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-29</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>comparar fechas, cantidades e indicadores con reglas deterministas</em>, para obtener resultados reproducibles para condiciones objetivas.</p>
-<ul class="hu-crit">
-<li>Las reglas manejan límites, unidades, monedas, períodos y vigencias explícitos.</li>
-<li>Cada cálculo conserva entradas, regla, resultado y motivo.</li>
-<li>Valores faltantes o incompatibles pasan a revisión manual.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-30</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>comparar requisitos semánticos con evidencias de EAG</em>, para obtener una propuesta explicable para revisión.</p>
-<ul class="hu-crit">
-<li>Se muestran por separado fuente del requisito y evidencia empresarial.</li>
-<li>No se afirma cumplimiento sin evidencia suficiente, vigente y compatible.</li>
-<li>Contradicciones, ambigüedad o soportes ilegibles quedan visibles.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-31</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>clasificar cada requisito con estados controlados</em>, para usar un lenguaje consistente y auditable.</p>
-<ul class="hu-crit">
-<li>Solo se permiten cumple, cumple_parcialmente, no_cumple y revision_manual.</li>
-<li>Falta de evidencia no genera cumple ni no_cumple automáticamente.</li>
-<li>Cumple parcialmente solo aplica a un requisito divisible bajo criterio validado; mientras no exista, no se asigna automáticamente.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-32</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>revisar y corregir el borrador con justificación</em>, para resolver errores y dejar pendientes explícitos.</p>
-<ul class="hu-crit">
-<li>Puede cambiar estado, evidencia u observación registrando autor, fecha y motivo.</li>
-<li>La salida automática inicial se conserva para medir discrepancias.</li>
-<li>Requisitos no aplicables permanecen en revision_manual hasta acordar evidencia y tratamiento.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-33</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Aprobador autorizado</em>, quiero <em>aprobar una versión concreta del análisis</em>, para habilitar el informe final solo después de revisión humana.</p>
-<ul class="hu-crit">
-<li>La aprobación guarda usuario, fecha y versiones de expediente, perfil y análisis.</li>
-<li>Pendientes y limitaciones siguen visibles.</li>
-<li>Aprobar no equivale a postular, adjudicar ni decidir automáticamente participar.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-34</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-11</span></div>
-<p class="hu-narr">Como <em>Sistema</em>, quiero <em>invalidar la aprobación cuando cambien entradas o resultados</em>, para impedir que un informe use evidencia desactualizada.</p>
-<ul class="hu-crit">
-<li>Cambios de documento, perfil, requisito, evidencia o decisión crean una nueva versión.</li>
-<li>La aprobación anterior deja de habilitar informe o envío.</li>
-<li>La interfaz explica qué cambió y qué revisión debe repetirse.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee8">
-<div class="dnum">E8</div>
-<div>
-<h3>Informe y comunicación controlada</h3>
-<div class="dsub">MVP-12 · 3 historias</div>
-<p>Entregar un informe aprobado, trazable y seguro a destinatarios autorizados.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-35</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-12</span></div>
-<p class="hu-narr">Como <em>Analista</em>, quiero <em>previsualizar el informe del análisis aprobado</em>, para verificar su contenido y presentación antes del envío.</p>
-<ul class="hu-crit">
-<li>El informe identifica oportunidad, versión, aprobador, fecha, requisitos, evidencias y limitaciones.</li>
-<li>El backend bloquea el PDF final si la aprobación no está vigente.</li>
-<li>Tablas largas y caracteres españoles se renderizan sin recortes.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-36</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-12</span></div>
-<p class="hu-narr">Como <em>Usuario autorizado</em>, quiero <em>descargar el PDF final aprobado</em>, para conservar una salida legible sin exponer el expediente completo.</p>
-<ul class="hu-crit">
-<li>La descarga exige permiso por recurso y usa almacenamiento privado.</li>
-<li>El PDF no añade afirmaciones sin evidencia ni adjunta soportes por defecto.</li>
-<li>La generación queda auditada con la versión correspondiente.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-37</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-12</span></div>
-<p class="hu-narr">Como <em>Usuario autorizado</em>, quiero <em>enviar el informe a destinatarios configurados</em>, para compartir el resultado sin duplicados ni envíos indiscriminados.</p>
-<ul class="hu-crit">
-<li>Solo destinatarios autorizados pueden seleccionarse y el backend vuelve a validar aprobación.</li>
-<li>Una clave de idempotencia evita correos duplicados durante reintentos.</li>
-<li>Destino, estado e intentos quedan auditados sin contenido sensible; pruebas reales usan únicamente bandeja autorizada.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee9">
-<div class="dnum">E9</div>
-<div>
-<h3>Retención, operación y recuperación</h3>
-<div class="dsub">MVP-13 · 4 historias</div>
-<p>Completar controles operativos antes de tratar documentos reales en producción.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-38</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-13</span></div>
-<p class="hu-narr">Como <em>Administrador</em>, quiero <em>aplicar la política de retención a datos de oportunidad</em>, para eliminar oportunamente archivos, texto, análisis, informes y copias de trabajo.</p>
-<ul class="hu-crit">
-<li>Un reloj controlado prueba el plazo configurado y el origen del cómputo.</li>
-<li>La purga cubre derivados y evita resurrección tras una restauración.</li>
-<li>El plazo propuesto de 30 días no se presenta como política definitiva hasta validación de EAG y backups.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-39</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-13</span></div>
-<p class="hu-narr">Como <em>Equipo operador</em>, quiero <em>monitorear tareas, fallos y alertas</em>, para detectar problemas sin registrar contenido empresarial.</p>
-<ul class="hu-crit">
-<li>Se observan sincronización, extracción, IA, correo y colas fallidas con estados técnicos.</li>
-<li>Logs y alertas excluyen archivos, credenciales, tokens y fragmentos sensibles.</li>
-<li>Reintentos tienen límites y los fallos no se ocultan como éxito.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-40</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-13</span></div>
-<p class="hu-narr">Como <em>Equipo operador</em>, quiero <em>restaurar backups y ejecutar rollback probado</em>, para recuperar el servicio respetando accesos y purgas.</p>
-<ul class="hu-crit">
-<li>Staging exige autenticación y no expone claves privilegiadas ni buckets públicos.</li>
-<li>Se ensayan restauración y rollback con evidencia reproducible.</li>
-<li>La restauración reaplica tombstones o purgas pendientes.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-41</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-13</span></div>
-<p class="hu-narr">Como <em>Responsable empresarial</em>, quiero <em>autorizar el tratamiento de datos y proveedores externos</em>, para decidir conscientemente qué información puede procesarse.</p>
-<ul class="hu-crit">
-<li>Se documentan finalidad, datos enviados, retención y controles del proveedor.</li>
-<li>No se contratan ni configuran servicios pagos sin autorización específica.</li>
-<li>store=false no se presenta por sí solo como retención cero.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-
-<article class="detail reveal" id="ee10">
-<div class="dnum">E10</div>
-<div>
-<h3>Piloto, medición y decisión de lanzamiento</h3>
-<div class="dsub">MVP-14 · 3 historias</div>
-<p>Validar utilidad, calidad y riesgos con usuarios y datos autorizados antes de cerrar el MVP.</p>
-<div class="hus">
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-42</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-14</span></div>
-<p class="hu-narr">Como <em>Responsable del piloto</em>, quiero <em>comparar el análisis manual y asistido sobre las mismas entradas</em>, para medir tiempo y errores sin sesgos evitables.</p>
-<ul class="hu-crit">
-<li>Se fijan previamente muestra, versiones, referencia humana, alcance y umbrales.</li>
-<li>Se miden por separado tiempo transcurrido, procesamiento, revisión, corrección y trabajo humano.</li>
-<li>Se reportan tamaño de muestra, denominadores, fallos y falsos cumplimientos; 60% no es garantía ni resultado demostrado.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-43</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-14</span></div>
-<p class="hu-narr">Como <em>Analista y administrador</em>, quiero <em>ejecutar UAT y recibir un manual breve</em>, para confirmar que el flujo puede operarse de forma segura.</p>
-<ul class="hu-crit">
-<li>El recorrido extremo a extremo usa usuarios y datos autorizados.</li>
-<li>Incidencias, capacitación y aceptación o rechazo se registran con responsables.</li>
-<li>Si faltan datos o usuarios, se entrega el protocolo pero el piloto sigue pendiente.</li>
-</ul>
-</div>
-<div class="hu">
-<div class="hu-head"><span class="hu-id">HU-44</span><span class="pill-p0">P0</span><span class="pill-issue">MVP-14</span></div>
-<p class="hu-narr">Como <em>Gerencia</em>, quiero <em>tomar una decisión go/no-go basada en evidencia</em>, para evitar lanzar con riesgos críticos o calidad insuficiente.</p>
-<ul class="hu-crit">
-<li>La decisión incluye métricas, limitaciones, incidencias y pendientes.</li>
-<li>Falsos cumplimientos o riesgos críticos de seguridad no resueltos bloquean el lanzamiento.</li>
-<li>La revisión humana final queda registrada; el sistema no decide autónomamente participar en una licitación.</li>
-</ul>
-</div>
-</div>
-</div>
-</article>
-    </div>
-  </section>
-
-  <section id="pendientes">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-kicker">4 · Pendientes de validación con EAG</div>
-        <h2 class="sec-title">Decisiones pendientes antes de comprometer el alcance</h2>
-        <p class="sec-sub">Estas decisiones condicionan historias concretas. Cada una tiene un responsable propuesto.</p>
-      </div>
-
-      <div class="table-scroll reveal">
-        <table class="cmp">
-          <thead>
-            <tr>
-              <th scope="col">Decisión pendiente</th>
-              <th scope="col">Impacto en historias</th>
-              <th scope="col">Responsable propuesto</th>
-            </tr>
-          </thead>
+      <div class="tbl-wrap reveal">
+        <table class="doc-t">
+          <thead><tr><th>Épica</th><th>Capacidad</th><th>Historias</th><th>Issues</th><th>Cant.</th></tr></thead>
           <tbody>
-<tr><td>Muestra real autorizada y documentos mínimos del perfil</td><td><span class="mono">HU-20 a HU-34, HU-42</span></td><td>Comercial, áreas aportantes y Gerencia</td></tr>
-<tr><td>Cobertura real de pliegos y relación entre datasets SECOP</td><td><span class="mono">HU-05, HU-11, HU-15</span></td><td>Equipo técnico + Comercial</td></tr>
-<tr><td>Horario y ventana incremental</td><td><span class="mono">HU-07</span></td><td>Administrador / operación</td></tr>
-<tr><td>Límites de 50 MB por archivo y 300 MB por oportunidad</td><td><span class="mono">HU-13, HU-16</span></td><td>EAG + equipo técnico</td></tr>
-<tr><td>Criterios por tipo para cumple parcialmente y no aplica</td><td><span class="mono">HU-31, HU-32</span></td><td>Comercial y áreas competentes</td></tr>
-<tr><td>Personas o roles autorizados para aprobar y enviar</td><td><span class="mono">HU-33 a HU-37</span></td><td>Gerencia</td></tr>
-<tr><td>Inicio del plazo de 30 días, maestros, auditoría y backups</td><td><span class="mono">HU-38, HU-40</span></td><td>Gerencia + legal/operación</td></tr>
-<tr><td>Proveedor de IA, datos permitidos, retención y presupuesto</td><td><span class="mono">HU-27, HU-41</span></td><td>Gerencia + responsable de datos</td></tr>
-<tr><td>Umbrales, tamaño de muestra y criterio go/no-go</td><td><span class="mono">HU-42 a HU-44</span></td><td>Gerencia + revisor designado</td></tr>
+<tr><td class='rowhead tnum'>E1</td><td>Acceso, roles y aislamiento</td><td class='tnum'>HU-01 → HU-04</td><td class='tnum'>MVP-04</td><td class='tnum'>4</td></tr>
+<tr><td class='rowhead tnum'>E2</td><td>Oportunidades SECOP II</td><td class='tnum'>HU-05 → HU-10</td><td class='tnum'>MVP-02 · MVP-05 · MVP-06</td><td class='tnum'>6</td></tr>
+<tr><td class='rowhead tnum'>E3</td><td>Expediente documental seguro</td><td class='tnum'>HU-11 → HU-15</td><td class='tnum'>MVP-07</td><td class='tnum'>5</td></tr>
+<tr><td class='rowhead tnum'>E4</td><td>Extracción de texto y OCR</td><td class='tnum'>HU-16 → HU-19</td><td class='tnum'>MVP-08</td><td class='tnum'>4</td></tr>
+<tr><td class='rowhead tnum'>E5</td><td>Perfil y evidencias empresariales</td><td class='tnum'>HU-20 → HU-24</td><td class='tnum'>MVP-09</td><td class='tnum'>5</td></tr>
+<tr><td class='rowhead tnum'>E6</td><td>Extracción estructurada de requisitos</td><td class='tnum'>HU-25 → HU-28</td><td class='tnum'>MVP-10</td><td class='tnum'>4</td></tr>
+<tr><td class='rowhead tnum'>E7</td><td>Comparación, revisión y aprobación humana</td><td class='tnum'>HU-29 → HU-34</td><td class='tnum'>MVP-11</td><td class='tnum'>6</td></tr>
+<tr><td class='rowhead tnum'>E8</td><td>Informe y comunicación controlada</td><td class='tnum'>HU-35 → HU-37</td><td class='tnum'>MVP-12</td><td class='tnum'>3</td></tr>
+<tr><td class='rowhead tnum'>E9</td><td>Retención, operación y recuperación</td><td class='tnum'>HU-38 → HU-41</td><td class='tnum'>MVP-13</td><td class='tnum'>4</td></tr>
+<tr><td class='rowhead tnum'>E10</td><td>Piloto, medición y decisión de lanzamiento</td><td class='tnum'>HU-42 → HU-44</td><td class='tnum'>MVP-14</td><td class='tnum'>3</td></tr>
           </tbody>
         </table>
       </div>
+      <div class="hero-cta reveal" style="margin-top:22px">
+        <a class="btn-pill dark" href="docs/">Ver las 44 historias completas</a>
+      </div>
+    </div>
+  </section>
 
-      <div class="callout reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+  <section id="pendientes" class="band-cream">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">04 · Pendientes de validación</div>
+        <h2 class="sec-title">Decisiones antes de comprometer el alcance</h2>
+        <p class="sec-sub">Estas decisiones condicionan historias concretas. Cada una tiene un responsable propuesto.</p>
+      </div>
+      <div class="tbl-wrap reveal">
+        <table class="doc-t">
+          <thead><tr><th>Decisión pendiente</th><th>Impacto en historias</th><th>Responsable propuesto</th></tr></thead>
+          <tbody>
+<tr><td>Muestra real autorizada y documentos mínimos del perfil</td><td class='tnum'><code>HU-20 a HU-34, HU-42</code></td><td>Comercial, áreas aportantes y Gerencia</td></tr>
+<tr><td>Cobertura real de pliegos y relación entre datasets SECOP</td><td class='tnum'><code>HU-05, HU-11, HU-15</code></td><td>Equipo técnico + Comercial</td></tr>
+<tr><td>Horario y ventana incremental</td><td class='tnum'><code>HU-07</code></td><td>Administrador / operación</td></tr>
+<tr><td>Límites de 50 MB por archivo y 300 MB por oportunidad</td><td class='tnum'><code>HU-13, HU-16</code></td><td>EAG + equipo técnico</td></tr>
+<tr><td>Criterios por tipo para cumple parcialmente y no aplica</td><td class='tnum'><code>HU-31, HU-32</code></td><td>Comercial y áreas competentes</td></tr>
+<tr><td>Personas o roles autorizados para aprobar y enviar</td><td class='tnum'><code>HU-33 a HU-37</code></td><td>Gerencia</td></tr>
+<tr><td>Inicio del plazo de 30 días, maestros, auditoría y backups</td><td class='tnum'><code>HU-38, HU-40</code></td><td>Gerencia + legal/operación</td></tr>
+<tr><td>Proveedor de IA, datos permitidos, retención y presupuesto</td><td class='tnum'><code>HU-27, HU-41</code></td><td>Gerencia + responsable de datos</td></tr>
+<tr><td>Umbrales, tamaño de muestra y criterio go/no-go</td><td class='tnum'><code>HU-42 a HU-44</code></td><td>Gerencia + revisor designado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
         <span><strong>Criterio de cierre del MVP:</strong> las 44 historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con pruebas reproducibles, revisión humana y dependencias técnicas aceptadas. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</span>
       </div>
     </div>
   </section>
 
-  <section id="exclusiones" style="background:var(--bg-soft);border-top:1px solid var(--line)">
+  <section id="exclusiones">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">5 · Exclusiones explícitas</div>
+        <div class="sec-kicker">05 · Exclusiones explícitas</div>
         <h2 class="sec-title">Lo que este MVP no hace</h2>
         <p class="sec-sub">Límites declarados para evitar expectativas fuera de alcance.</p>
       </div>
-
-      <div class="hu reveal" style="max-width:900px">
-        <ul class="hu-crit" style="gap:9px">
-<li>Postulación automática de ofertas o decisión autónoma de participar.</li>
-<li>Garantía de adjudicación, precisión no medida o reducción de tiempo presentada como resultado.</li>
-<li>Fuentes distintas de SECOP II en la primera versión.</li>
-<li>Registro manual de oportunidades; la carga manual se limita a documentos complementarios de una oportunidad SECOP II.</li>
-<li>WhatsApp, Telegram, facturación, aplicación móvil y personalizaciones avanzadas.</li>
-<li>Buckets públicos, enlaces permanentes, expedientes completos adjuntos por defecto o contenido sensible en observabilidad.</li>
-<li>Uso de documentos internos con un proveedor externo sin autorización empresarial específica.</li>
+      <div class="tbl-wrap reveal" style="padding:24px 28px">
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:9px">
+<li>Postulación automática de ofertas o decisión autónoma de participar.</li><li>Garantía de adjudicación, precisión no medida o reducción de tiempo presentada como resultado.</li><li>Fuentes distintas de SECOP II en la primera versión.</li><li>Registro manual de oportunidades; la carga manual se limita a documentos complementarios de una oportunidad SECOP II.</li><li>WhatsApp, Telegram, facturación, aplicación móvil y personalizaciones avanzadas.</li><li>Buckets públicos, enlaces permanentes, expedientes completos adjuntos por defecto o contenido sensible en observabilidad.</li><li>Uso de documentos internos con un proveedor externo sin autorización empresarial específica.</li>
         </ul>
       </div>
-
       <div class="callout warn reveal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
         <span><strong>Nota final:</strong> este documento debe revisarse con EAG antes de convertir las historias en compromiso de producto. Los estados de avance, integraciones y resultados del piloto se verifican por separado en las issues y evidencias de prueba.</span>
       </div>
     </div>
@@ -916,7 +311,7 @@ footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:34px 0
 <footer>
   <div class="wrap foot">
     <span>EAG Ingenieros S.A.S. · Historias de usuario del MVP · Versión 1.0 · 7 de septiembre de 2026</span>
-    <span class="mono">riverosmejia/EAG-HU</span>
+    <span class="tnum"><a href="https://github.com/riverosmejia/EAG-HU">riverosmejia/EAG-HU</a> · <a href="docs/">documentación</a></span>
   </div>
 </footer>
 
