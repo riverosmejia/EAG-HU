@@ -10,6 +10,9 @@ Sistema de diseño: Stripi-Inspired (ver skill stripi-design-system)
 import html as H
 import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
+from data_plan import (RESUMEN, STACK, DECISIONES_CRITICAS, DECISIONES_ADOPTADAS,
+                       DECISIONES_OPCIONALES, SEMANAS, RIESGOS, PREGUNTAS_EAG,
+                       HUS_AMPLIACION, CRITERIOS_ACEPTACION, INCONSISTENCIAS_RESUELTAS, META)
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")
 os.makedirs(OUT, exist_ok=True)
@@ -21,6 +24,14 @@ def esc(s):
 
 # ---------- Nav tree ----------
 nav = []
+nav.append(("plan", "Plan de acción", [
+    ("plan-resumen", "Resumen ejecutivo"),
+    ("plan-decisiones", "Decisiones adoptadas"),
+    ("plan-stack", "Stack y arquitectura"),
+    ("plan-semanas", "Semanas de implementación"),
+    ("plan-riesgos", "Riesgos y mitigación"),
+    ("plan-eag", "Preguntas a EAG"),
+]))
 nav.append(("como-leer", "Cómo leer este documento", []))
 nav.append(("actores", "Actores y responsabilidades", []))
 nav.append(("reglas", "Reglas transversales", []))
@@ -30,6 +41,7 @@ for e in EPICAS:
     code, title, _, _, hus = e
     kids = [(f"{h[0].lower()}", h[0]) for h in hus]
     nav.append((f"e{code.lower()}", f"{code} · {title}", kids))
+nav.append(("ampliaciones", "Ampliaciones propuestas", []))
 nav.append(("pendientes", "Pendientes de validación", []))
 nav.append(("cierre", "Criterio de cierre", []))
 nav.append(("exclusiones", "Exclusiones explícitas", []))
@@ -92,6 +104,113 @@ excl_lis = "".join(f"<li>{esc(x)}</li>" for x in EXCLUSIONES)
 epics_html = "\n".join(epic_section(e) for e in EPICAS)
 
 total_hus = sum(len(e[4]) for e in EPICAS)
+ver, fecha = META
+
+# ---------- Plan de acción ----------
+def dec_card(did, tag, cls, titulo, texto):
+    return f'''<article class="hu">
+<h4><span class="hu-id">{did}</span><span class="pri {cls}">{tag}</span></h4>
+<p class="narr"><strong>{esc(titulo)}.</strong> {esc(texto)}</p>
+</article>'''
+
+dec_crit = "".join(dec_card(d, "Crítica", "pri-p0", t, x) for d, t, x in DECISIONES_CRITICAS)
+dec_ado = "".join(dec_card(d, "Adoptada", "pri-p1", t, x) for d, t, x in DECISIONES_ADOPTADAS)
+dec_opc = "".join(dec_card(d, "Opcional", "pri-p1", t, x) for d, t, x in DECISIONES_OPCIONALES)
+
+stack_rows = "".join(
+    f"<tr><td class='rowhead'>{esc(c)}</td><td>{esc(t)}</td><td>{esc(d)}</td></tr>"
+    for c, t, d, _s in STACK)
+sem_rows = "".join(
+    f"<tr><td class='rowhead tnum'>{esc(s)}</td><td><strong>{esc(f)}</strong></td><td>{esc(d)}</td></tr>"
+    for s, f, d in SEMANAS)
+
+def sev_pill(sv):
+    cls = "pri-p0" if sv == "Alta" else "pri-p1"
+    return f'<span class="pri {cls}">{esc(sv)}</span>'
+
+ries_rows = "".join(
+    f"<tr><td>{esc(r)}</td><td>{esc(m)}</td><td>{sev_pill(sv)}</td></tr>"
+    for r, m, sv in RIESGOS)
+inco_rows = "".join(
+    f"<tr><td class='rowhead'>{esc(p)}</td><td>{esc(c)}</td><td>{esc(r)}</td></tr>"
+    for p, c, r in INCONSISTENCIAS_RESUELTAS)
+q_lis = "".join(f"<li>{esc(q)}</li>" for q in PREGUNTAS_EAG)
+resumen_lis = "".join(f"<li><strong>{esc(a)}:</strong> {esc(t)}</li>" for a, t in RESUMEN)
+criterios_note = admon("note", "Criterios de aceptación del MVP",
+    "<ul class='crit'>" + "".join(f"<li>{esc(c)}</li>" for c in CRITERIOS_ACEPTACION) + "</ul>")
+
+ampl_html = "".join(
+    hu_section(hid, pri, "Ampliación", actor, cap, valor, crits)
+    for hid, pri, actor, cap, valor, crits in HUS_AMPLIACION)
+
+plan_html = f'''<section id="plan">
+<div class="sec-kicker">01</div>
+<h2>Plan de acción</h2>
+<p class="section-sub">Plan de implementación del MVP (12 semanas) con las decisiones y mejoras adoptadas en la auditoría técnica del 10 de septiembre de 2026. Sujeto a validación de EAG.</p>
+
+<section class="plan-sub" id="plan-resumen">
+<h3>Resumen ejecutivo</h3>
+{admon("note", "Qué construye el MVP", "<ul class='crit'>" + resumen_lis + "</ul>")}
+{criterios_note}
+</section>
+
+<section class="plan-sub" id="plan-decisiones">
+<h3>Decisiones adoptadas</h3>
+<p class="section-sub">Las decisiones de la auditoría, priorizadas. Resuelven inconsistencias del plan original y riesgos técnicos; las preguntas que requieren decisión de EAG se listan al final de la sección.</p>
+<h4>Críticas · bloquean diseño o cronograma</h4>
+{dec_crit}
+<h4>Recomendadas · mejoran viabilidad</h4>
+{dec_ado}
+<h4>Opcionales · backlog</h4>
+{dec_opc}
+</section>
+
+<section class="plan-sub" id="plan-stack">
+<h3>Stack y arquitectura</h3>
+<p class="section-sub">Decisión A3: FastAPI es la capa de autoridad; RLS queda solo para Storage con bucket privado. El scheduler se resuelve con cron de Render (B4).</p>
+<div class="tbl-wrap"><table class="doc-t">
+<thead><tr><th>Capa</th><th>Tecnología</th><th>Decisión / nota</th></tr></thead>
+<tbody>
+{stack_rows}
+</tbody>
+</table></div>
+</section>
+
+<section class="plan-sub" id="plan-semanas">
+<h3>Implementación por semanas</h3>
+<p class="section-sub">Doce semanas con hitos. Semanas 07-08 son el camino crítico (extracción IA + validación de citas con normalización OCR); semana 01 incluye el hito externo A5 (autorización y muestra de EAG).</p>
+<div class="tbl-wrap"><table class="doc-t">
+<thead><tr><th>Semana</th><th>Foco</th><th>Hitos y decisiones aplicadas</th></tr></thead>
+<tbody>
+{sem_rows}
+</tbody>
+</table></div>
+</section>
+
+<section class="plan-sub" id="plan-riesgos">
+<h3>Riesgos y mitigación</h3>
+<p class="section-sub">Inconsistencias del plan original detectadas en la auditoría y cómo quedaron resueltas.</p>
+<div class="tbl-wrap"><table class="doc-t">
+<thead><tr><th>Punto</th><th>Contradicción detectada</th><th>Resolución</th></tr></thead>
+<tbody>
+{inco_rows}
+</tbody>
+</table></div>
+<p class="section-sub" style="margin-top:18px">Riesgos operativos con su mitigación y severidad.</p>
+<div class="tbl-wrap"><table class="doc-t">
+<thead><tr><th>Riesgo</th><th>Mitigación</th><th>Severidad</th></tr></thead>
+<tbody>
+{ries_rows}
+</tbody>
+</table></div>
+</section>
+
+<section class="plan-sub" id="plan-eag">
+<h3>Preguntas que requieren decisión de EAG</h3>
+<p class="section-sub">Bloqueantes de producto o cronograma. Cada una indica la recomendación técnica del equipo.</p>
+<ol class="qlist">{q_lis}</ol>
+</section>
+</section>'''
 
 CSS = """
 :root{
@@ -249,6 +368,16 @@ mark{background:var(--cream);border-radius:3px;padding:0 2px}
   .hu,.adm,.tbl-wrap{break-inside:avoid;box-shadow:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* ---------- Plan de acción ---------- */
+.plan-sub{margin:32px 0 0;border-top:1px solid var(--hairline);padding-top:26px;scroll-margin-top:24px}
+.plan-sub h4{font-size:11px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--mute);margin:22px 0 8px}
+.dec-tag{font-size:10px;font-weight:400;letter-spacing:.1px;padding:4px 8px;border-radius:9999px}
+ol.qlist{list-style:none;counter-reset:q;margin:14px 0}
+ol.qlist li{counter-increment:q;position:relative;padding:9px 0 9px 42px;font-size:14px;color:var(--ink-2);line-height:1.5;border-bottom:1px solid var(--hairline)}
+ol.qlist li:last-child{border-bottom:none}
+ol.qlist li::before{content:counter(q);position:absolute;left:0;top:8px;width:28px;height:28px;border-radius:9999px;
+  background:var(--brand-dark);color:#fff;font-size:10px;font-weight:400;font-feature-settings:"tnum";letter-spacing:-.2px;display:flex;align-items:center;justify-content:center}
 """
 
 JS = """
@@ -304,8 +433,8 @@ html_doc = f'''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EAG MVP · Documentación · Historias de usuario</title>
-<meta name="description" content="Documentación de las {total_hus} historias de usuario del MVP de EAG Ingenieros S.A.S. (SECOP II): épicas, criterios de aceptación, pendientes y exclusiones.">
+<title>EAG MVP · Plan de acción y documentación · Historias de usuario</title>
+<meta name="description" content="Plan de acción (12 semanas) y documentación de las {total_hus} historias de usuario del MVP de EAG Ingenieros S.A.S. (SECOP II): decisiones adoptadas, stack, épicas, criterios, pendientes y exclusiones.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -318,8 +447,8 @@ html_doc = f'''<!DOCTYPE html>
   <div class="side-brand">
     <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 30 10v12L16 30 2 22V10z" fill="#533afd"/><path d="M11 16.5l3.5 3.5L21 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div>
-      <span class="t">EAG MVP · HU</span>
-      <span class="v">Versión 1.0 · 2026-09-07</span>
+      <span class="t">EAG MVP · Plan + HU</span>
+      <span class="v">Versión {ver} · {fecha}</span>
     </div>
   </div>
   <div class="side-search">
@@ -331,7 +460,7 @@ html_doc = f'''<!DOCTYPE html>
 {nav_html}
     </ul>
   </nav>
-  <div class="side-foot">riverosmejia/EAG-HU · propuesta sujeta a validación de EAG</div>
+  <div class="side-foot">riverosmejia/EAG-HU · plan de acción + {total_hus} HUs · propuesta sujeta a validación de EAG</div>
 </aside>
 <div class="overlay"></div>
 <button class="menu-btn" aria-label="Abrir menú">
@@ -343,19 +472,22 @@ html_doc = f'''<!DOCTYPE html>
   <div class="doc">
 
 <header class="doc-header">
-  <div class="kicker">EAG Ingenieros S.A.S. · MVP · Documentación</div>
-  <h1>Historias de usuario del MVP</h1>
-  <p class="lead">Plataforma de apoyo al análisis de oportunidades de SECOP II. Este documento describe el comportamiento considerado necesario para completar el MVP —no el estado actual de implementación— y está sujeto a revisión humana y validación de EAG.</p>
+  <div class="kicker">EAG Ingenieros S.A.S. · MVP · Plan de acción y documentación</div>
+  <h1>Plan de acción y historias de usuario del MVP</h1>
+  <p class="lead">Plataforma de apoyo al análisis de oportunidades de SECOP II. Este documento reúne el plan de implementación (12 semanas, con las decisiones adoptadas en la auditoría técnica) y el comportamiento considerado necesario para completar el MVP —no el estado actual de implementación—. Todo está sujeto a revisión humana y validación de EAG.</p>
   <div class="stat-row">
+    <span class="stat-pill"><b>{len(SEMANAS)}</b> semanas de plan</span>
     <span class="stat-pill"><b>{total_hus}</b> historias</span>
     <span class="stat-pill"><b>{len(EPICAS)}</b> épicas</span>
-    <span class="stat-pill">Base: CONTEXTO.md · CASO_DE_USO.md · MATRIZ_DE_PERMISOS.md · BACKLOG.md · MVP-01 a MVP-14</span>
-    <span class="stat-pill">Versión 1.0 · 7 de septiembre de 2026</span>
+    <span class="stat-pill">Base: CONTEXTO.md · CASO_DE_USO.md · MATRIZ_DE_PERMISOS.md · BACKLOG.md · MVP-01 a MVP-14 · Auditoría 2026-09-10</span>
+    <span class="stat-pill">Versión {ver} · {fecha}</span>
   </div>
 </header>
 
+{plan_html}
+
 <section id="como-leer">
-  <div class="sec-kicker">01</div>
+  <div class="sec-kicker">02</div>
   <h2>Cómo leer este documento</h2>
   <p class="section-sub">Las historias se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión.</p>
   <div class="tbl-wrap"><table class="doc-t">
@@ -370,7 +502,7 @@ html_doc = f'''<!DOCTYPE html>
 </section>
 
 <section id="actores">
-  <div class="sec-kicker">02</div>
+  <div class="sec-kicker">03</div>
   <h2>Actores y responsabilidades</h2>
   <p class="section-sub">Roles presentes en el MVP y su responsabilidad.</p>
   <div class="tbl-wrap"><table class="doc-t">
@@ -382,7 +514,7 @@ html_doc = f'''<!DOCTYPE html>
 </section>
 
 <section id="reglas">
-  <div class="sec-kicker">03</div>
+  <div class="sec-kicker">04</div>
   <h2>Reglas transversales</h2>
   {admon("note", "Principios que aplican a todo el MVP",
   "<ul class='crit'>"
@@ -395,14 +527,14 @@ html_doc = f'''<!DOCTYPE html>
 </section>
 
 <section id="flujo">
-  <div class="sec-kicker">04</div>
+  <div class="sec-kicker">05</div>
   <h2>Secuencia principal</h2>
   <p class="section-sub">Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo. Las dependencias del backlog siguen siendo obligatorias aunque una historia se lea de forma independiente.</p>
   <ol class="flow">{flow_ol}</ol>
 </section>
 
 <section id="mapa">
-  <div class="sec-kicker">05</div>
+  <div class="sec-kicker">06</div>
   <h2>Mapa de épicas</h2>
   <p class="section-sub">Vista general: cada épica agrupa historias y se vincula con issues del backlog.</p>
   <div class="tbl-wrap"><table class="doc-t">
@@ -415,8 +547,15 @@ html_doc = f'''<!DOCTYPE html>
 
 {epics_html}
 
+<section id="ampliaciones">
+  <div class="sec-kicker">07</div>
+  <h2>Ampliaciones propuestas</h2>
+  <p class="section-sub">HUs adicionales que cubren los huecos detectados en la auditoría frente a las pantallas prometidas por el plan (gestión de usuarios, auditoría, parámetros, notificaciones). Propuestas y pendientes de validación con EAG.</p>
+{ampl_html}
+</section>
+
 <section id="pendientes">
-  <div class="sec-kicker">06</div>
+  <div class="sec-kicker">08</div>
   <h2>Pendientes de validación con EAG</h2>
   <p class="section-sub">Decisiones que condicionan historias concretas, con responsable propuesto.</p>
   <div class="tbl-wrap"><table class="doc-t">
@@ -428,14 +567,14 @@ html_doc = f'''<!DOCTYPE html>
 </section>
 
 <section id="cierre">
-  <div class="sec-kicker">07</div>
+  <div class="sec-kicker">09</div>
   <h2>Criterio de cierre del MVP</h2>
   {admon("note", "Cuándo se da por aceptada una historia",
   "<p>Las 44 historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con <strong>pruebas reproducibles, revisión humana y dependencias técnicas aceptadas</strong>. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</p>")}
 </section>
 
 <section id="exclusiones">
-  <div class="sec-kicker">08</div>
+  <div class="sec-kicker">10</div>
   <h2>Exclusiones explícitas</h2>
   <p class="section-sub">Límites declarados para evitar expectativas fuera de alcance.</p>
   {admon("warning", "Este MVP no hace lo siguiente",
@@ -457,7 +596,20 @@ with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
 
 import re
 ids = sorted(set(re.findall(r"HU-\d+", html_doc)), key=lambda x: int(x.split("-")[1]))
+orig = [i for i in ids if int(i.split("-")[1]) <= 44]
+ampl = [i for i in ids if int(i.split("-")[1]) > 44]
 print("docs/index.html generado:", os.path.getsize(os.path.join(OUT, "index.html")), "bytes")
-print("HUs únicas:", len(ids))
-assert len(ids) == 44
-print("OK: 44/44")
+print("HUs originales:", len(orig), "| ampliaciones:", len(ampl), "| total:", len(ids))
+assert len(orig) == 44, f"Se esperaban 44 HUs originales, hay {len(orig)}"
+assert sorted(ampl) == ["HU-45", "HU-46", "HU-47", "HU-48"], f"Ampliaciones inesperadas: {ampl}"
+print("OK: 44/44 + 4 ampliaciones")
+print("Plan: semanas =", len(SEMANAS), "| stack =", len(STACK),
+      "| decisiones =", len(DECISIONES_CRITICAS) + len(DECISIONES_ADOPTADAS) + len(DECISIONES_OPCIONALES),
+      "| riesgos =", len(RIESGOS), "| preguntas EAG =", len(PREGUNTAS_EAG),
+      "| ampliaciones =", len(HUS_AMPLIACION))
+assert len(SEMANAS) == 12
+assert len(HUS_AMPLIACION) == 4
+assert all(k in html_doc for k in
+           ["#plan-resumen", "#plan-decisiones", "#plan-stack", "#plan-semanas",
+            "#plan-riesgos", "#plan-eag", "#ampliaciones"])
+print("OK: plan completo")

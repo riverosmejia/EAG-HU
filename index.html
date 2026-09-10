@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EAG Ingenieros · Historias de Usuario del MVP</title>
-<meta name="description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales. Versión 1.0 · 7 de septiembre de 2026.">
-<meta property="og:title" content="EAG Ingenieros · Historias de Usuario del MVP">
-<meta property="og:description" content="44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
+<title>EAG Ingenieros · MVP · Plan de acción e Historias de Usuario</title>
+<meta name="description" content="Plan de acción (12 semanas) e 44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales. Versión 1.1 · 2026-09-10.">
+<meta property="og:title" content="EAG Ingenieros · MVP · Plan de acción e Historias de Usuario">
+<meta property="og:description" content="Plan de acción (12 semanas) e 44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,6 +124,15 @@ table.doc-t td a{font-weight:400}
 .callout.warn{background:var(--canvas);color:var(--ink-2);border-color:var(--hairline)}
 .callout.warn svg{stroke:var(--lemon)}
 
+/* ---------- Plan (versión rápida) ---------- */
+.stack-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.dec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.dec{background:var(--canvas);border:1px solid var(--hairline);border-radius:12px;padding:18px;
+  box-shadow:var(--shadow-1);font-size:13.5px;line-height:1.48;color:var(--ink-2)}
+.dec b{display:block;color:var(--primary-deep);font-weight:500;font-size:13px;margin-bottom:6px;letter-spacing:-.1px}
+.dec .tag{display:inline-block;font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--primary-subdued);border-radius:9999px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+
 /* ---------- Footer ---------- */
 footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64px 0;font-size:13px;color:var(--mute)}
 .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -171,6 +180,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
     <nav aria-label="Secciones">
       <a href="#como-leer">Cómo leerlo</a>
       <a href="#flujo">Flujo</a>
+      <a href="#plan">Plan</a>
       <a href="#mapa">Épicas</a>
       <a href="#pendientes">Pendientes</a>
       <a href="docs/" style="color:var(--primary);font-weight:400">Documentación →</a>
@@ -182,10 +192,11 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
 <main>
   <section class="hero">
     <div class="wrap">
-      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 1.0 · 7 de septiembre de 2026</div>
-      <h1>Historias de usuario del <em>MVP</em></h1>
+      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 1.1 · 2026-09-10</div>
+      <h1>Plan de acción e historias de usuario del <em>MVP</em></h1>
       <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Este documento es una <strong>propuesta del equipo</strong>: no demuestra aprobación empresarial, cobertura completa de SECOP, integración productiva ni mejoras medidas. Toda decisión final requiere revisión humana y validación de EAG.</p>
       <div class="stat-row">
+        <span class="stat-pill"><b>12</b> semanas de plan</span>
         <span class="stat-pill"><b>44</b> historias propuestas</span>
         <span class="stat-pill"><b>10</b> épicas funcionales</span>
         <span class="stat-pill"><b>2</b> roles iniciales</span>
@@ -197,10 +208,39 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
     </div>
   </section>
 
+  <section id="plan">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">01 · Plan de acción</div>
+        <h2 class="sec-title">12 semanas para un MVP defendible</h2>
+        <p class="sec-sub">Plan de implementación con las decisiones adoptadas en la auditoría técnica del 10 de septiembre de 2026: resuelve inconsistencias del plan original y los riesgos de costo, cobertura y dependencias. Sujeto a validación de EAG.</p>
+      </div>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span><strong>En una frase:</strong> Construir en 12 semanas una aplicación web productiva (React + FastAPI) que consulte oportunidades de SECOP II, reúna y procese documentos, compare requisitos con la información de EAG y produzca un borrador de evaluación revisado por humanos antes de generar el informe.</span>
+      </div>
+      <div class="dec-grid reveal">
+<div class="dec"><b><span class="tag">Crítica</span>A1 · Modelado de roles</b>2 roles base (Administrador, Analista) + permiso fino «approve/send» asignable. El Aprobador/Gerencia se implementa como permiso configurable, no como rol separado. Alinea HU-33 a HU-37 y resuelve la contradicción con el plan original.</div><div class="dec"><b><span class="tag">Crítica</span>A2 · Pliegos en ZIP</b>Se admiten con extracción en sandbox y controles explícitos: ratio anti zip-bomb, profundidad máxima 5, tamaño por miembro, escaneo antivirus por miembro, sin symlinks ni path traversal. Resuelve la contradicción con HU-12 y preserva la cobertura real de SECOP.</div><div class="dec"><b><span class="tag">Crítica</span>A3 · Arquitectura de autorización</b>FastAPI como capa de autoridad (conexión service_role; RLS solo para Storage y bucket privado). Permisos resueltos en servidor, nunca en claims del navegador (HU-04). Evita el pitfall de confiar en RLS para datos de negocio.</div><div class="dec"><b><span class="tag">Crítica</span>A4 · Aprobación por snapshot</b>Al aprobar se congela una versión del análisis (expediente + perfil + decisiones). Cambios posteriores crean una versión nueva; no se invalida retroactivamente (HU-34 se cumple congelando, no invalidando).</div><div class="dec"><b><span class="tag">Crítica</span>A5 · Hito externo bloqueante</b>Autorización escrita de tratamiento de datos + muestra real de licitaciones como hito de la semana 1. Sin este hito, el piloto (semanas 11-12) no se cierra.</div>
+      </div>
+      <div class="sec-head reveal" style="margin-top:34px">
+        <h2 class="sec-title" style="font-size:24px">Stack</h2>
+      </div>
+      <div class="stack-row reveal"><span class="stat-pill">React + Vite</span><span class="stat-pill">FastAPI</span><span class="stat-pill">Supabase</span><span class="stat-pill">Celery + Redis</span><span class="stat-pill">Cron Render</span><span class="stat-pill">OpenAI API</span><span class="stat-pill">Tesseract</span><span class="stat-pill">ClamAV</span><span class="stat-pill">WeasyPrint</span><span class="stat-pill">Resend</span><span class="stat-pill">Sentry</span></div>
+      <div class="sec-head reveal" style="margin-top:34px">
+        <h2 class="sec-title" style="font-size:24px">Cadencia por semanas</h2>
+      </div>
+      <ol class="flow reveal"><li><strong>Sem. 01</strong><span>Prueba técnica SECOP</span></li><li><strong>Sem. 02</strong><span>Fundaciones</span></li><li><strong>Sem. 03</strong><span>Cliente Socrata y sincronización</span></li><li><strong>Sem. 04</strong><span>Tablero y detalle</span></li><li><strong>Sem. 05</strong><span>Expediente documental</span></li><li><strong>Sem. 06</strong><span>Perfil EAG</span></li><li><strong>Sem. 07</strong><span>Extracción IA de requisitos</span></li><li><strong>Sem. 08</strong><span>Validación de citas y comparación</span></li><li><strong>Sem. 09</strong><span>Aprobación y entrega</span></li><li><strong>Sem. 10</strong><span>Operación y retención</span></li><li><strong>Sem. 11</strong><span>Piloto</span></li><li><strong>Sem. 12</strong><span>Cierre y go/no-go</span></li></ol>
+      <div class="hero-cta reveal" style="margin-top:22px">
+        <a class="btn-pill" href="docs/#plan">Ver el plan detallado →</a>
+        <a class="btn-pill ghost" href="docs/">Versión documentación completa</a>
+      </div>
+    </div>
+  </section>
+
   <section id="como-leer" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">01 · Cómo leer este documento</div>
+        <div class="sec-kicker">02 · Cómo leer este documento</div>
         <h2 class="sec-title">Comportamiento necesario, no estado actual</h2>
         <p class="sec-sub">Las historias se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables · prioridad P0 (imprescindible) o P1 (configurable o aplazable) · trazabilidad con la issue.</p>
       </div>
@@ -220,7 +260,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
   <section id="flujo">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">02 · Mapa del alcance</div>
+        <div class="sec-kicker">03 · Mapa del alcance</div>
         <h2 class="sec-title">Secuencia principal</h2>
         <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo.</p>
       </div>
@@ -231,7 +271,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
   <section id="mapa" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">03 · Mapa de épicas</div>
+        <div class="sec-kicker">04 · Mapa de épicas</div>
         <h2 class="sec-title">Las 10 épicas funcionales</h2>
         <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las 44 historias está en la versión documentación.</p>
       </div>
@@ -261,7 +301,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
   <section id="pendientes" class="band-cream">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">04 · Pendientes de validación</div>
+        <div class="sec-kicker">05 · Pendientes de validación</div>
         <h2 class="sec-title">Decisiones antes de comprometer el alcance</h2>
         <p class="sec-sub">Estas decisiones condicionan historias concretas. Cada una tiene un responsable propuesto.</p>
       </div>
@@ -291,7 +331,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
   <section id="exclusiones">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">05 · Exclusiones explícitas</div>
+        <div class="sec-kicker">06 · Exclusiones explícitas</div>
         <h2 class="sec-title">Lo que este MVP no hace</h2>
         <p class="sec-sub">Límites declarados para evitar expectativas fuera de alcance.</p>
       </div>
@@ -310,7 +350,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
 
 <footer>
   <div class="wrap foot">
-    <span>EAG Ingenieros S.A.S. · Historias de usuario del MVP · Versión 1.0 · 7 de septiembre de 2026</span>
+    <span>EAG Ingenieros S.A.S. · Plan de acción e historias de usuario del MVP · Versión 1.1 · 2026-09-10</span>
     <span class="tnum"><a href="https://github.com/riverosmejia/EAG-HU">riverosmejia/EAG-HU</a> · <a href="docs/">documentación</a></span>
   </div>
 </footer>

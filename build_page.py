@@ -7,6 +7,7 @@ como único CTA, pills, tnum, banda cream para interludios.
 import html as H
 import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
+from data_plan import RESUMEN, STACK, DECISIONES_CRITICAS, SEMANAS, META
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,6 +35,16 @@ actors_html = "\n".join(
     for a in ACTORS)
 
 total_hus = sum(len(e[4]) for e in EPICAS)
+ver, fecha = META
+
+plan_lis = "".join(f"<li><strong>{esc(a)}:</strong> {esc(t)}</li>" for a, t in RESUMEN)
+stack_pills = "".join(f'<span class="stat-pill">{esc(s)}</span>' for _c, _t, _d, s in STACK)
+dec_cards_q = "".join(
+    f'<div class="dec"><b><span class="tag">Crítica</span>{esc(d)} · {esc(ti)}</b>{esc(te)}</div>'
+    for d, ti, te in DECISIONES_CRITICAS)
+sem_q = "".join(
+    f'<li><strong>Sem. {esc(s)}</strong><span>{esc(f)}</span></li>'
+    for s, f, _d in SEMANAS)
 
 CSS = """
 :root{
@@ -147,6 +158,15 @@ table.doc-t td a{font-weight:400}
 .callout.warn{background:var(--canvas);color:var(--ink-2);border-color:var(--hairline)}
 .callout.warn svg{stroke:var(--lemon)}
 
+/* ---------- Plan (versión rápida) ---------- */
+.stack-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.dec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.dec{background:var(--canvas);border:1px solid var(--hairline);border-radius:12px;padding:18px;
+  box-shadow:var(--shadow-1);font-size:13.5px;line-height:1.48;color:var(--ink-2)}
+.dec b{display:block;color:var(--primary-deep);font-weight:500;font-size:13px;margin-bottom:6px;letter-spacing:-.1px}
+.dec .tag{display:inline-block;font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;
+  color:var(--primary-deep);background:var(--primary-subdued);border-radius:9999px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+
 /* ---------- Footer ---------- */
 footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64px 0;font-size:13px;color:var(--mute)}
 .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -188,10 +208,10 @@ page = f'''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EAG Ingenieros · Historias de Usuario del MVP</title>
-<meta name="description" content="{total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. {len(EPICAS)} épicas funcionales. Versión 1.0 · 7 de septiembre de 2026.">
-<meta property="og:title" content="EAG Ingenieros · Historias de Usuario del MVP">
-<meta property="og:description" content="{total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
+<title>EAG Ingenieros · MVP · Plan de acción e Historias de Usuario</title>
+<meta name="description" content="Plan de acción (12 semanas) e {total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. {len(EPICAS)} épicas funcionales. Versión {ver} · {fecha}.">
+<meta property="og:title" content="EAG Ingenieros · MVP · Plan de acción e Historias de Usuario">
+<meta property="og:description" content="Plan de acción (12 semanas) e {total_hus} historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -210,6 +230,7 @@ page = f'''<!DOCTYPE html>
     <nav aria-label="Secciones">
       <a href="#como-leer">Cómo leerlo</a>
       <a href="#flujo">Flujo</a>
+      <a href="#plan">Plan</a>
       <a href="#mapa">Épicas</a>
       <a href="#pendientes">Pendientes</a>
       <a href="docs/" style="color:var(--primary);font-weight:400">Documentación →</a>
@@ -221,10 +242,11 @@ page = f'''<!DOCTYPE html>
 <main>
   <section class="hero">
     <div class="wrap">
-      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 1.0 · 7 de septiembre de 2026</div>
-      <h1>Historias de usuario del <em>MVP</em></h1>
+      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión {ver} · {fecha}</div>
+      <h1>Plan de acción e historias de usuario del <em>MVP</em></h1>
       <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Este documento es una <strong>propuesta del equipo</strong>: no demuestra aprobación empresarial, cobertura completa de SECOP, integración productiva ni mejoras medidas. Toda decisión final requiere revisión humana y validación de EAG.</p>
       <div class="stat-row">
+        <span class="stat-pill"><b>{len(SEMANAS)}</b> semanas de plan</span>
         <span class="stat-pill"><b>{total_hus}</b> historias propuestas</span>
         <span class="stat-pill"><b>{len(EPICAS)}</b> épicas funcionales</span>
         <span class="stat-pill"><b>2</b> roles iniciales</span>
@@ -236,10 +258,39 @@ page = f'''<!DOCTYPE html>
     </div>
   </section>
 
+  <section id="plan">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">01 · Plan de acción</div>
+        <h2 class="sec-title">12 semanas para un MVP defendible</h2>
+        <p class="sec-sub">Plan de implementación con las decisiones adoptadas en la auditoría técnica del 10 de septiembre de 2026: resuelve inconsistencias del plan original y los riesgos de costo, cobertura y dependencias. Sujeto a validación de EAG.</p>
+      </div>
+      <div class="callout note reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span><strong>En una frase:</strong> {esc(RESUMEN[0][1])}</span>
+      </div>
+      <div class="dec-grid reveal">
+{dec_cards_q}
+      </div>
+      <div class="sec-head reveal" style="margin-top:34px">
+        <h2 class="sec-title" style="font-size:24px">Stack</h2>
+      </div>
+      <div class="stack-row reveal">{stack_pills}</div>
+      <div class="sec-head reveal" style="margin-top:34px">
+        <h2 class="sec-title" style="font-size:24px">Cadencia por semanas</h2>
+      </div>
+      <ol class="flow reveal">{sem_q}</ol>
+      <div class="hero-cta reveal" style="margin-top:22px">
+        <a class="btn-pill" href="docs/#plan">Ver el plan detallado →</a>
+        <a class="btn-pill ghost" href="docs/">Versión documentación completa</a>
+      </div>
+    </div>
+  </section>
+
   <section id="como-leer" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">01 · Cómo leer este documento</div>
+        <div class="sec-kicker">02 · Cómo leer este documento</div>
         <h2 class="sec-title">Comportamiento necesario, no estado actual</h2>
         <p class="sec-sub">Las historias se agrupan por capacidad y se vinculan con las issues del backlog para facilitar planificación, pruebas y revisión. Formato: narrativa «Como [persona], quiero [capacidad], para [valor]» · criterios observables · prioridad P0 (imprescindible) o P1 (configurable o aplazable) · trazabilidad con la issue.</p>
       </div>
@@ -256,7 +307,7 @@ page = f'''<!DOCTYPE html>
   <section id="flujo">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">02 · Mapa del alcance</div>
+        <div class="sec-kicker">03 · Mapa del alcance</div>
         <h2 class="sec-title">Secuencia principal</h2>
         <p class="sec-sub">El recorrido de cada oportunidad dentro del MVP. Las capacidades operativas y de retención atraviesan todo el flujo; el piloto valida el resultado completo.</p>
       </div>
@@ -267,7 +318,7 @@ page = f'''<!DOCTYPE html>
   <section id="mapa" class="band-soft">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">03 · Mapa de épicas</div>
+        <div class="sec-kicker">04 · Mapa de épicas</div>
         <h2 class="sec-title">Las {len(EPICAS)} épicas funcionales</h2>
         <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las {total_hus} historias está en la versión documentación.</p>
       </div>
@@ -288,7 +339,7 @@ page = f'''<!DOCTYPE html>
   <section id="pendientes" class="band-cream">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">04 · Pendientes de validación</div>
+        <div class="sec-kicker">05 · Pendientes de validación</div>
         <h2 class="sec-title">Decisiones antes de comprometer el alcance</h2>
         <p class="sec-sub">Estas decisiones condicionan historias concretas. Cada una tiene un responsable propuesto.</p>
       </div>
@@ -310,7 +361,7 @@ page = f'''<!DOCTYPE html>
   <section id="exclusiones">
     <div class="wrap">
       <div class="sec-head reveal">
-        <div class="sec-kicker">05 · Exclusiones explícitas</div>
+        <div class="sec-kicker">06 · Exclusiones explícitas</div>
         <h2 class="sec-title">Lo que este MVP no hace</h2>
         <p class="sec-sub">Límites declarados para evitar expectativas fuera de alcance.</p>
       </div>
@@ -329,7 +380,7 @@ page = f'''<!DOCTYPE html>
 
 <footer>
   <div class="wrap foot">
-    <span>EAG Ingenieros S.A.S. · Historias de usuario del MVP · Versión 1.0 · 7 de septiembre de 2026</span>
+    <span>EAG Ingenieros S.A.S. · Plan de acción e historias de usuario del MVP · Versión {ver} · {fecha}</span>
     <span class="tnum"><a href="https://github.com/riverosmejia/EAG-HU">riverosmejia/EAG-HU</a> · <a href="docs/">documentación</a></span>
   </div>
 </footer>
