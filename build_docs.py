@@ -635,7 +635,9 @@ html_doc = f'''<!DOCTYPE html>
 </html>
 '''
 
-JS = JS.replace("__KWJSON__", kw_js)
+assert "__KWJSON__" in JS, "El JS debe contener el placeholder para sustituirlo"
+html_doc = html_doc.replace("__KWJSON__", kw_js)
+assert "__KWJSON__" not in html_doc, "El HTML final quedó con el placeholder sin sustituir"
 
 with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(html_doc)
