@@ -8,6 +8,7 @@ Sistema de diseño: Stripi-Inspired (ver skill stripi-design-system)
 - tnum en IDs y números; hairlines #e3e8ee; banda cream #f5e9d4 para avisos
 """
 import html as H
+import json
 import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
 from data_plan import (RESUMEN, STACK, DECISIONES_CRITICAS, DECISIONES_ADOPTADAS,
@@ -105,6 +106,37 @@ epics_html = "\n".join(epic_section(e) for e in EPICAS)
 
 total_hus = sum(len(e[4]) for e in EPICAS)
 ver, fecha = META
+
+# ---------- Palabras clave por ancla (conceptos que el usuario puede buscar) ----------
+KEYWORDS = {
+  "ee1": "usuarios cantidad de usuarios invitacion invitaciones roles registro publico acceso habilitar",
+  "ee2": "oportunidades licitaciones secop sincronizacion catalogo socrata procesos proyectos",
+  "ee3": "documentos archivos expediente zip antivirus descarga cuarentena faltantes",
+  "ee4": "ocr escaneos pdf docx xlsx texto extraccion localizador",
+  "ee5": "perfil empresa experiencia contratos personal hojas de vida finanzas evidencia RUP",
+  "ee6": "requisitos inteligencia artificial ia llm extraccion estructurada alucinacion",
+  "ee7": "comparacion cumplimiento aprobacion revision estados aprobador correccion",
+  "ee8": "informe pdf reporte correo email envio destinatarios",
+  "ee9": "retencion respaldo backup restauracion operacion monitoreo borrar purga 30 dias",
+  "ee10": "piloto prueba uat go no go lanzamiento decision medicion tiempo",
+  "plan-resumen": "objetivo alcance resumen criterios aceptacion",
+  "plan-decisiones": "decisiones cambios a1 a2 a3 a4 a5 zip snapshot autorizacion",
+  "plan-stack": "tecnologias stack react fastapi supabase redis render vercel tesseract clamav pdf correo",
+  "plan-semanas": "cronograma calendario fechas hitos semanas sem 1 sem 12",
+  "plan-riesgos": "riesgo peligro costo gasto openai presupuesto latencia",
+  "plan-eag": "preguntas presupuesto cuesta cuanto cuesta proveedor ia autorizacion decision",
+  "plan": "plan implementacion 12 semanas mvp",
+  "ampliaciones": "nuevas historias gaps usuarios auditoria parametros notificaciones",
+  "hu-01": "cantidad de usuarios invitacion magic link enlace registro",
+  "hu-03": "invitaciones crear revocar administrador",
+  "hu-16": "limites tamano memoria mb",
+  "hu-26": "alucinacion prompt injection validacion",
+  "hu-27": "presupuesto ia costo gasto openai proveedor limites tokens",
+  "hu-31": "cumple parcialmente no cumple revision manual estados",
+  "hu-38": "borrar purgar retencion expendio 30 dias",
+  "hu-42": "piloto medicion tiempo error muestra",
+}
+kw_js = json.dumps(KEYWORDS, ensure_ascii=False)
 
 # ---------- Plan de acción ----------
 def dec_card(did, tag, cls, titulo, texto):
@@ -389,23 +421,35 @@ ov.addEventListener('click',function(){sb.classList.remove('open');ov.classList.
 
 var q=document.getElementById('doc-search');
 var nores=document.getElementById('search-nores');
+var KW=__KWJSON__;
+function norm(s){ s=(''+s).toLowerCase(); try{ s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(e){} return s; }
+var BODY={};
+[].slice.call(document.querySelectorAll('section[id],article[id]')).forEach(function(el){BODY[el.id]=norm(el.textContent);});
+function bodyHit(id,v){
+  var s=norm((BODY[id]||'')+' '+(KW[id]||''));
+  return s.indexOf(v)>-1;
+}
 var items=[].slice.call(document.querySelectorAll('.nav-item'));
 q.addEventListener('input',function(){
-  var v=q.value.trim().toLowerCase(),hits=0;
+  var v=norm(q.value.trim()),hits=0;
+  if(!v){ items.forEach(function(li){li.style.display='';var s=li.querySelector('.subnav');if(s)[].slice.call(s.querySelectorAll('li')).forEach(function(sli){sli.style.display='';});}); nores.style.display='none'; return; }
   items.forEach(function(li){
-    var txt=li.firstChild.textContent.toLowerCase();
+    var a0=li.querySelector(':scope > a');
+    var txt=norm(a0?a0.textContent:'');
     var match=txt.indexOf(v)>-1;
     var subMatch=false;
     var s=li.querySelector('.subnav');
     if(s){
       [].slice.call(s.querySelectorAll('li')).forEach(function(sli){
-        var sm=sli.textContent.toLowerCase().indexOf(v)>-1;
-        sli.style.display=(v&&sm)?'':'none';
+        var a=sli.querySelector('a');
+        var id=a? a.getAttribute('href').slice(1):'';
+        var sm=norm(sli.textContent).indexOf(v)>-1 || bodyHit(id,v);
+        sli.style.display=sm?'':'none';
         if(sm)subMatch=true;
       });
     }
-    li.style.display=(match||subMatch||!v)?'':'none';
-    if(v&&(match||subMatch))hits++;
+    li.style.display=(match||subMatch)?'':'none';
+    if(match||subMatch)hits++;
   });
   nores.style.display=(v&&!hits)?'block':'none';
 });
@@ -452,8 +496,8 @@ html_doc = f'''<!DOCTYPE html>
     </div>
   </div>
   <div class="side-search">
-    <input id="doc-search" type="search" placeholder="Buscar épica o HU…" aria-label="Buscar en el documento">
-    <p class="nores" id="search-nores">Sin resultados. Prueba con otro término (p. ej. HU-12, OCR, retención).</p>
+    <input id="doc-search" type="search" placeholder="Buscar por tema: presupuesto, usuarios, OCR, ZIP…" aria-label="Buscar en el documento">
+    <p class="nores" id="search-nores">Sin resultados. Prueba con un término más general (p. ej. presupuesto, usuarios, retención, ZIP) o un número de HU.</p>
   </div>
   <nav class="side-nav" aria-label="Contenido">
     <ul>
@@ -590,6 +634,8 @@ html_doc = f'''<!DOCTYPE html>
 </body>
 </html>
 '''
+
+JS = JS.replace("__KWJSON__", kw_js)
 
 with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
     f.write(html_doc)

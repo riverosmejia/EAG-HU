@@ -188,8 +188,8 @@ ol.qlist li::before{content:counter(q);position:absolute;left:0;top:8px;width:28
     </div>
   </div>
   <div class="side-search">
-    <input id="doc-search" type="search" placeholder="Buscar épica o HU…" aria-label="Buscar en el documento">
-    <p class="nores" id="search-nores">Sin resultados. Prueba con otro término (p. ej. HU-12, OCR, retención).</p>
+    <input id="doc-search" type="search" placeholder="Buscar por tema: presupuesto, usuarios, OCR, ZIP…" aria-label="Buscar en el documento">
+    <p class="nores" id="search-nores">Sin resultados. Prueba con un término más general (p. ej. presupuesto, usuarios, retención, ZIP) o un número de HU.</p>
   </div>
   <nav class="side-nav" aria-label="Contenido">
     <ul>
@@ -818,23 +818,35 @@ ov.addEventListener('click',function(){sb.classList.remove('open');ov.classList.
 
 var q=document.getElementById('doc-search');
 var nores=document.getElementById('search-nores');
+var KW=__KWJSON__;
+function norm(s){ s=(''+s).toLowerCase(); try{ s=s.normalize('NFD').replace(/[̀-ͯ]/g,''); }catch(e){} return s; }
+var BODY={};
+[].slice.call(document.querySelectorAll('section[id],article[id]')).forEach(function(el){BODY[el.id]=norm(el.textContent);});
+function bodyHit(id,v){
+  var s=norm((BODY[id]||'')+' '+(KW[id]||''));
+  return s.indexOf(v)>-1;
+}
 var items=[].slice.call(document.querySelectorAll('.nav-item'));
 q.addEventListener('input',function(){
-  var v=q.value.trim().toLowerCase(),hits=0;
+  var v=norm(q.value.trim()),hits=0;
+  if(!v){ items.forEach(function(li){li.style.display='';var s=li.querySelector('.subnav');if(s)[].slice.call(s.querySelectorAll('li')).forEach(function(sli){sli.style.display='';});}); nores.style.display='none'; return; }
   items.forEach(function(li){
-    var txt=li.firstChild.textContent.toLowerCase();
+    var a0=li.querySelector(':scope > a');
+    var txt=norm(a0?a0.textContent:'');
     var match=txt.indexOf(v)>-1;
     var subMatch=false;
     var s=li.querySelector('.subnav');
     if(s){
       [].slice.call(s.querySelectorAll('li')).forEach(function(sli){
-        var sm=sli.textContent.toLowerCase().indexOf(v)>-1;
-        sli.style.display=(v&&sm)?'':'none';
+        var a=sli.querySelector('a');
+        var id=a? a.getAttribute('href').slice(1):'';
+        var sm=norm(sli.textContent).indexOf(v)>-1 || bodyHit(id,v);
+        sli.style.display=sm?'':'none';
         if(sm)subMatch=true;
       });
     }
-    li.style.display=(match||subMatch||!v)?'':'none';
-    if(v&&(match||subMatch))hits++;
+    li.style.display=(match||subMatch)?'':'none';
+    if(match||subMatch)hits++;
   });
   nores.style.display=(v&&!hits)?'block':'none';
 });
