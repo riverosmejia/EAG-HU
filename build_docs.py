@@ -12,8 +12,9 @@ import json
 import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
 from data_plan import (RESUMEN, STACK, DECISIONES_CRITICAS, DECISIONES_ADOPTADAS,
-                       DECISIONES_OPCIONALES, SEMANAS, RIESGOS, PREGUNTAS_EAG,
-                       HUS_AMPLIACION, CRITERIOS_ACEPTACION, INCONSISTENCIAS_RESUELTAS, META)
+                       DECISIONES_OPCIONALES, FASES, RIESGOS, PREGUNTAS_EAG,
+                       NOTA_PREGUNTAS, HUS_AMPLIACION, CRITERIOS_ACEPTACION,
+                       INCONSISTENCIAS_RESUELTAS, META)
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")
 os.makedirs(OUT, exist_ok=True)
@@ -29,10 +30,11 @@ nav.append(("plan", "Plan de acción", [
     ("plan-resumen", "Resumen ejecutivo"),
     ("plan-decisiones", "Decisiones adoptadas"),
     ("plan-stack", "Stack y arquitectura"),
-    ("plan-semanas", "Semanas de implementación"),
+    ("plan-fases", "Fases de implementación"),
     ("plan-riesgos", "Riesgos y mitigación"),
     ("plan-eag", "Preguntas a EAG"),
 ]))
+nav.append(("estado", "Estado real de implementación", []))
 nav.append(("como-leer", "Cómo leer este documento", []))
 nav.append(("actores", "Actores y responsabilidades", []))
 nav.append(("reglas", "Reglas transversales", []))
@@ -122,9 +124,10 @@ KEYWORDS = {
   "plan-resumen": "objetivo alcance resumen criterios aceptacion",
   "plan-decisiones": "decisiones cambios a1 a2 a3 a4 a5 zip snapshot autorizacion",
   "plan-stack": "tecnologias stack react fastapi supabase redis render vercel tesseract clamav pdf correo",
-  "plan-semanas": "cronograma calendario fechas hitos semanas sem 1 sem 12",
+  "plan-fases": "cronograma calendario fases etapa hitos duracion F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 F10",
   "plan-riesgos": "riesgo peligro costo gasto openai presupuesto latencia",
   "plan-eag": "preguntas presupuesto cuesta cuanto cuesta proveedor ia autorizacion decision",
+  "estado": "estado avance implementado construido repo github issue pr rama codigo pruebas sincronizacion secop",
   "plan": "plan implementacion 12 semanas mvp",
   "ampliaciones": "nuevas historias gaps usuarios auditoria parametros notificaciones",
   "hu-01": "cantidad de usuarios invitacion magic link enlace registro",
@@ -152,9 +155,13 @@ dec_opc = "".join(dec_card(d, "Opcional", "pri-p1", t, x) for d, t, x in DECISIO
 stack_rows = "".join(
     f"<tr><td class='rowhead'>{esc(c)}</td><td>{esc(t)}</td><td>{esc(d)}</td></tr>"
     for c, t, d, _s in STACK)
-sem_rows = "".join(
-    f"<tr><td class='rowhead tnum'>{esc(s)}</td><td><strong>{esc(f)}</strong></td><td>{esc(d)}</td></tr>"
-    for s, f, d in SEMANAS)
+fase_rows = "".join(
+    "<tr><td class='rowhead tnum'>{cod}</td><td><strong>{nom}</strong>"
+    "<div class='fase-dur tnum'>{dur}</div></td>"
+    "<td>{det}{ent}</td></tr>".format(
+        cod=esc(cod), nom=esc(nom), dur=esc(dur), det=esc(det),
+        ent="<ul class='fase-ent'>" + "".join(f"<li>{esc(x)}</li>" for x in ent) + "</ul>")
+    for cod, nom, dur, det, ent in FASES)
 
 def sev_pill(sv):
     cls = "pri-p0" if sv == "Alta" else "pri-p1"
@@ -208,13 +215,13 @@ plan_html = f'''<section id="plan">
 </table></div>
 </section>
 
-<section class="plan-sub" id="plan-semanas">
-<h3>Implementación por semanas</h3>
-<p class="section-sub">Doce semanas con hitos. Semanas 07-08 son el camino crítico (extracción IA + validación de citas con normalización OCR); semana 01 incluye el hito externo A5 (autorización y muestra de EAG).</p>
+<section class="plan-sub" id="plan-fases">
+<h3>Implementación por fases</h3>
+<p class="section-sub">Once semanas de trabajo efectivo repartidas en once fases. La fase F7 (grafo de análisis con LangGraph) es el camino crítico y concentra el riesgo del proyecto: no se comprime. F3 y F6 pueden solaparse con fases vecinas.</p>
 <div class="tbl-wrap"><table class="doc-t">
-<thead><tr><th>Semana</th><th>Foco</th><th>Hitos y decisiones aplicadas</th></tr></thead>
+<thead><tr><th>Fase</th><th>Nombre y duración</th><th>Detalle y entregables</th></tr></thead>
 <tbody>
-{sem_rows}
+{fase_rows}
 </tbody>
 </table></div>
 </section>
@@ -238,8 +245,8 @@ plan_html = f'''<section id="plan">
 </section>
 
 <section class="plan-sub" id="plan-eag">
-<h3>Preguntas que requieren decisión de EAG</h3>
-<p class="section-sub">Bloqueantes de producto o cronograma. Cada una indica la recomendación técnica del equipo.</p>
+<h3>Preguntas abiertas para EAG</h3>
+<p class="section-sub">{esc(NOTA_PREGUNTAS)}</p>
 <ol class="qlist">{q_lis}</ol>
 </section>
 </section>'''
@@ -406,7 +413,17 @@ mark{background:var(--cream);border-radius:3px;padding:0 2px}
 .plan-sub h4{font-size:11px;font-weight:400;letter-spacing:.1px;text-transform:uppercase;color:var(--mute);margin:22px 0 8px}
 .dec-tag{font-size:10px;font-weight:400;letter-spacing:.1px;padding:4px 8px;border-radius:9999px}
 ol.qlist{list-style:none;counter-reset:q;margin:14px 0}
-ol.qlist li{counter-increment:q;position:relative;padding:9px 0 9px 42px;font-size:14px;color:var(--ink-2);line-height:1.5;border-bottom:1px solid var(--hairline)}
+ol.callout-go{margin:1.5rem 0 0;padding:1.15rem 1.3rem;border-radius:14px;
+  background:linear-gradient(180deg,rgba(83,58,253,.05),rgba(83,58,253,.02));
+  border:1px solid var(--hairline);border-left:3px solid var(--primary)}
+.callout-go-h{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--primary);margin-bottom:.5rem}
+.callout-go p{margin:0;font-size:.93rem;line-height:1.65;color:var(--ink-2)}
+.callout-go-2{margin-top:.7rem !important;padding-top:.7rem;border-top:1px solid var(--hairline)}
+.fase-ent{margin:.5rem 0 0;padding-left:1.05rem;display:grid;gap:.22rem}
+.fase-ent li{font-size:.83rem;line-height:1.5;color:var(--ink-2)}
+.fase-dur{margin-top:.28rem;font-size:.73rem;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.qlist li{counter-increment:q;position:relative;padding:9px 0 9px 42px;font-size:14px;color:var(--ink-2);line-height:1.5;border-bottom:1px solid var(--hairline)}
 ol.qlist li:last-child{border-bottom:none}
 ol.qlist li::before{content:counter(q);position:absolute;left:0;top:8px;width:28px;height:28px;border-radius:9999px;
   background:var(--brand-dark);color:#fff;font-size:10px;font-weight:400;font-feature-settings:"tnum";letter-spacing:-.2px;display:flex;align-items:center;justify-content:center}
@@ -518,9 +535,14 @@ html_doc = f'''<!DOCTYPE html>
 <header class="doc-header">
   <div class="kicker">EAG Ingenieros S.A.S. · MVP · Plan de acción y documentación</div>
   <h1>Plan de acción y historias de usuario del MVP</h1>
-  <p class="lead">Plataforma de apoyo al análisis de oportunidades de SECOP II. Este documento reúne el plan de implementación (12 semanas, con las decisiones adoptadas en la auditoría técnica) y el comportamiento considerado necesario para completar el MVP —no el estado actual de implementación—. Todo está sujeto a revisión humana y validación de EAG.</p>
+  <p class="lead">Plataforma de apoyo al análisis de oportunidades de SECOP II. Este documento reúne el plan de implementación vigente (11 fases, 11 semanas) y el comportamiento considerado necesario para completar el MVP —no el estado actual de implementación—. Toda recomendación final requiere revisión humana.</p>
+  <div class="callout-go">
+    <div class="callout-go-h">Qué se va a construir</div>
+    <p>Una aplicación web que consulta oportunidades reales de SECOP II, reúne y procesa sus documentos, extrae los requisitos con IA validando cada cita contra el texto fuente, los compara con el perfil de la empresa y produce un borrador de evaluación que una persona revisa y aprueba antes de generar el informe.</p>
+    <p class="callout-go-2"><strong>El proyecto no depende de entregables de EAG.</strong> Se construye con datos públicos reales de SECOP II, una base de datos propia y un perfil empresarial cargable desde la plataforma. Cada decisión que EAG no ha respondido tiene una respuesta provisional del equipo, marcada como tal: si EAG responde, se ajusta la configuración, no se rehace el sistema.</p>
+  </div>
   <div class="stat-row">
-    <span class="stat-pill"><b>{len(SEMANAS)}</b> semanas de plan</span>
+    <span class="stat-pill"><b>{len(FASES)}</b> fases · 11 semanas</span>
     <span class="stat-pill"><b>{total_hus}</b> historias</span>
     <span class="stat-pill"><b>{len(EPICAS)}</b> épicas</span>
     <span class="stat-pill">Base: CONTEXTO.md · CASO_DE_USO.md · MATRIZ_DE_PERMISOS.md · BACKLOG.md · MVP-01 a MVP-14 · Auditoría 2026-09-10</span>
@@ -529,6 +551,39 @@ html_doc = f'''<!DOCTYPE html>
 </header>
 
 {plan_html}
+
+estado_html = """<section id="estado">
+<div class="sec-kicker">02</div>
+<h2>Estado real de implementación</h2>
+<p class="narr">Este documento describe el comportamiento <strong>necesario</strong> para completar el MVP. El avance verificable vive en el <a href="https://github.com/SamuLopez1/EAGingenieros">repositorio</a> y en sus issues. El resumen siguiente es un corte al <span class="tnum">@@FECHA@@</span>.</p>
+
+<div class="tbl-wrap"><table class="doc-t">
+<thead><tr><th>Entrega</th><th>Issue</th><th>Situación verificada</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Caso de uso mínimo</td><td class="tnum">MVP-01</td><td>Documento redactado. Abierta: la validación empresarial sigue pendiente y ya no bloquea.</td></tr>
+<tr><td class="rowhead">Prueba técnica de SECOP II</td><td class="tnum">MVP-02</td><td><strong>Cerrada con evidencia real.</strong> La API de procesos responde; la relación con el dataset de archivos <strong>no</strong> se confirmó.</td></tr>
+<tr><td class="rowhead">Estructura base y CI</td><td class="tnum">MVP-03</td><td>API e interfaz mínimas ejecutables, integración continua en verde. Queda un ajuste menor en un PR abierto.</td></tr>
+<tr><td class="rowhead">Autenticación, roles y aislamiento</td><td class="tnum">MVP-04</td><td>Implementación extensa con verificación de token, roles y migraciones de permisos. <strong>Probada solo con dobles de prueba:</strong> nunca se ejecutó contra un proveedor real.</td></tr>
+<tr><td class="rowhead">Sincronización de oportunidades</td><td class="tnum">MVP-05</td><td>Cliente operacional construido y <strong>verificado contra la API real</strong>: identificador, URL oficial y fecha en la totalidad de la muestra.</td></tr>
+<tr><td class="rowhead">Oportunidades: listado y detalle</td><td class="tnum">MVP-06</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Expediente documental</td><td class="tnum">MVP-07</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">OCR y extracción de texto</td><td class="tnum">MVP-08</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Perfil y evidencias de la empresa</td><td class="tnum">MVP-09</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Extracción de requisitos con IA</td><td class="tnum">MVP-10</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Comparación y aprobación humana</td><td class="tnum">MVP-11</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Informe y envío controlado</td><td class="tnum">MVP-12</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Retención y operación</td><td class="tnum">MVP-13</td><td>No iniciado.</td></tr>
+<tr><td class="rowhead">Piloto y decisión de lanzamiento</td><td class="tnum">MVP-14</td><td>No iniciado.</td></tr>
+</tbody>
+</table></div>
+
+@@AVISO@@
+</section>
+
+"""
+
+estado_html = estado_html.replace("@@FECHA@@", esc(fecha)).replace("@@AVISO@@", admon("warning", "Lo que este documento no afirma",
+  "<p>Las historias de usuario describen comportamiento esperado, no funcionalidad entregada. Ninguna integración se considera probada mientras solo se haya verificado con datos sintéticos. Los resultados de la prueba técnica de SECOP corresponden a una muestra acotada y no demuestran cobertura de pliegos de oportunidades abiertas.</p>"))
 
 <section id="como-leer">
   <div class="sec-kicker">02</div>
@@ -651,13 +706,13 @@ print("HUs originales:", len(orig), "| ampliaciones:", len(ampl), "| total:", le
 assert len(orig) == 44, f"Se esperaban 44 HUs originales, hay {len(orig)}"
 assert sorted(ampl) == ["HU-45", "HU-46", "HU-47", "HU-48"], f"Ampliaciones inesperadas: {ampl}"
 print("OK: 44/44 + 4 ampliaciones")
-print("Plan: semanas =", len(SEMANAS), "| stack =", len(STACK),
+print("Plan: fases =", len(FASES), "| stack =", len(STACK),
       "| decisiones =", len(DECISIONES_CRITICAS) + len(DECISIONES_ADOPTADAS) + len(DECISIONES_OPCIONALES),
       "| riesgos =", len(RIESGOS), "| preguntas EAG =", len(PREGUNTAS_EAG),
       "| ampliaciones =", len(HUS_AMPLIACION))
-assert len(SEMANAS) == 12
+assert len(FASES) == 11
 assert len(HUS_AMPLIACION) == 4
 assert all(k in html_doc for k in
-           ["#plan-resumen", "#plan-decisiones", "#plan-stack", "#plan-semanas",
+           ["#plan-resumen", "#plan-decisiones", "#plan-stack", "#plan-fases",
             "#plan-riesgos", "#plan-eag", "#ampliaciones"])
 print("OK: plan completo")

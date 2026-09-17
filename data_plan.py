@@ -1,93 +1,170 @@
 # -*- coding: utf-8 -*-
 """Datos del Plan de Acción del MVP de EAG Ingenieros (SECOP II).
 
-Resultado de la auditoría técnica del 2026-09-10 sobre el plan de implementación
-original y las 44 HUs. Consumido por build_page.py (versión rápida) y
-build_docs.py (versión detallada).
+Resultado de la auditoría técnica del 2026-09-10 y de la replanificación del
+2026-09-17, tras confirmarse que EAG no aporta reunión, muestra ni validación.
+
+Cambio de estrategia: el proyecto deja de depender de entregables de EAG. Se
+construye el flujo completo con datos públicos reales de SECOP II, un Supabase
+self-hosted propio y un grafo LangGraph como orquestador del análisis.
+
+Consumido por build_page.py (versión rápida) y build_docs.py (versión detallada).
 Estructura: tuplas ordenadas, nunca HTML.
 """
 
-META = ("1.1", "2026-09-10")
+META = ("2.0", "2026-09-17")
 
 RESUMEN = [
- ("Objetivo", "Construir en 12 semanas una aplicación web productiva (React + FastAPI) que consulte oportunidades de SECOP II, reúna y procese documentos, compare requisitos con la información de EAG y produzca un borrador de evaluación revisado por humanos antes de generar el informe."),
- ("Flujo", "Sincronizar SECOP → filtrar → descargar/cargar documentos → validar → extraer texto/OCR → identificar requisitos → comparar con EAG → borrador → revisión humana → aprobación → PDF → correo autorizado."),
- ("Datos", "APIs oficiales de procesos (p6dx-8zbt) y documentos (dmgg-8hin), actualizadas por Socrata. Sin automatización de la interfaz web de SECOP."),
+ ("Objetivo", "Construir una aplicación web productiva (React + FastAPI + LangGraph) que consulte oportunidades de SECOP II, reúna y procese documentos, compare requisitos con el perfil de la empresa y produzca un borrador de evaluación revisado por humanos antes de generar el informe."),
+ ("Estrategia", "El proyecto no depende de entregables de EAG. Se construye con datos públicos reales de SECOP II, un Supabase self-hosted propio y un perfil empresarial cargable desde la plataforma. La demostración de valor no espera autorización externa."),
+ ("Flujo", "Sincronizar SECOP → filtrar → cargar/descargar documentos → validar y poner en cuarentena → extraer texto/OCR → extraer requisitos (grafo LangGraph) → validar citas → comparar con el perfil → borrador → interrupción para revisión humana → aprobación → PDF → correo autorizado."),
+ ("Datos", "APIs oficiales de procesos (p6dx-8zbt) y documentos (dmgg-8hin), actualizadas por Socrata. Sin automatización de la interfaz web de SECOP. La relación entre ambos datasets no quedó confirmada en el spike, por lo que la carga manual de documentos es el camino principal, no un respaldo."),
 ]
 
 # (capa, tecnología, decisión, etiqueta corta para versión rápida)
 STACK = [
- ("Frontend", "React · TypeScript · Vite · React Query · Tailwind", "Desplegado en Vercel; cliente TypeScript generado desde OpenAPI.", "React + Vite"),
- ("Backend", "Python 3.12 · FastAPI · Pydantic · SQLAlchemy · Alembic", "API /api/v1 + OpenAPI; autorización resuelta en servidor (HU-04).", "FastAPI"),
- ("Datos", "Supabase PostgreSQL · Auth · Storage", "Bucket privado + URLs firmadas cortas (HU-14); RLS solo para Storage, no para negocio (A3).", "Supabase"),
- ("Asíncrono", "Celery + Redis", "Redis como add-on externo (Redis Cloud / Upstash); presupuestado.", "Celery + Redis"),
- ("Scheduler", "Cron de Render → POST /sync-runs", "Decisión B4: menos piezas que Celery Beat.", "Cron Render"),
- ("IA", "Adaptador intercambiable · OpenAI Responses API inicial", "store=false · tope de gasto mensual configurable · salidas JSON validadas por esquema · chunking por categorías (B2).", "OpenAI API"),
- ("OCR", "Tesseract", "Worker Celery con ≥2 GB RAM; umbral de «texto suficiente» calibrado en semana 1.", "Tesseract"),
- ("Antivirus", "ClamAV", "Escaneo por archivo/miembro en worker; un fallo del antivirus no equivale a limpio (HU-13).", "ClamAV"),
- ("PDF", "WeasyPrint", "Fuentes con soporte español en la imagen Docker de Render.", "WeasyPrint"),
- ("Correo", "Resend", "Invitaciones + informes; idempotencia por clave (HU-37).", "Resend"),
- ("Errores", "Sentry", "Sin contenido sensible en logs ni alertas (HU-39).", "Sentry"),
+ ("Frontend", "React · TypeScript · Vite · React Query · Tailwind", "Cliente TypeScript generado desde OpenAPI. Reutiliza el sistema de diseño ya definido para el proyecto.", "React + Vite"),
+ ("Backend", "Python 3.12 · FastAPI · Pydantic · SQLAlchemy · Alembic", "API versionada + OpenAPI; autorización resuelta en servidor (HU-04).", "FastAPI"),
+ ("Datos", "Supabase self-hosted propio (Postgres 17 · Auth · Storage)", "Stack aislado y dedicado al proyecto, con red, volúmenes y puertos propios. Sin dependencia de cuentas de EAG ni de terceros.", "Supabase propio"),
+ ("Orquestación", "LangGraph con checkpointer en Postgres", "Reemplaza a Celery + Redis. El grafo orquesta el pipeline de análisis y su estado persistido es la propia auditoría del análisis.", "LangGraph"),
+ ("Scheduler", "Cron del sistema → endpoint de sincronización", "Menos piezas y menos superficie que un planificador embebido.", "Cron"),
+ ("IA", "Adaptador intercambiable · modelo configurable", "Salidas JSON validadas por esquema versionado · tope de gasto mensual · caché por hash · documentos tratados como datos no confiables.", "Adaptador IA"),
+ ("OCR", "Tesseract", "Se activa por umbral explícito y configurable; conserva página y advertencias de calidad.", "Tesseract"),
+ ("Antivirus", "ClamAV", "Escaneo por archivo y por miembro de ZIP; un fallo del antivirus no equivale a archivo limpio (HU-13).", "ClamAV"),
+ ("PDF", "WeasyPrint", "Fuentes con soporte completo para español.", "WeasyPrint"),
+ ("Errores", "Observabilidad sin contenido sensible", "Sin archivos, tokens, credenciales ni fragmentos de pliegos en logs ni alertas (HU-39).", "Logs seguros"),
 ]
 
-# Decisiones de la auditoría: (id, título, decisión)
+# Decisiones de la auditoría original: (id, título, decisión)
 DECISIONES_CRITICAS = [
  ("A1", "Modelado de roles",
   "2 roles base (Administrador, Analista) + permiso fino «approve/send» asignable. El Aprobador/Gerencia se implementa como permiso configurable, no como rol separado. Alinea HU-33 a HU-37 y resuelve la contradicción con el plan original."),
  ("A2", "Pliegos en ZIP",
-  "Se admiten con extracción en sandbox y controles explícitos: ratio anti zip-bomb, profundidad máxima 5, tamaño por miembro, escaneo antivirus por miembro, sin symlinks ni path traversal. Resuelve la contradicción con HU-12 y preserva la cobertura real de SECOP."),
+  "Se admiten con extracción en sandbox y controles explícitos: ratio anti zip-bomb, profundidad máxima 5, tamaño por miembro, escaneo antivirus por miembro, sin symlinks ni path traversal. Preserva la cobertura real de SECOP frente a HU-12."),
  ("A3", "Arquitectura de autorización",
-  "FastAPI como capa de autoridad (conexión service_role; RLS solo para Storage y bucket privado). Permisos resueltos en servidor, nunca en claims del navegador (HU-04). Evita el pitfall de confiar en RLS para datos de negocio."),
+  "FastAPI como capa de autoridad (conexión service_role; RLS para Storage y bucket privado). Permisos resueltos en servidor, nunca en claims del navegador (HU-04). Evita confiar en RLS para datos de negocio."),
  ("A4", "Aprobación por snapshot",
   "Al aprobar se congela una versión del análisis (expediente + perfil + decisiones). Cambios posteriores crean una versión nueva; no se invalida retroactivamente (HU-34 se cumple congelando, no invalidando)."),
- ("A5", "Hito externo bloqueante",
-  "Autorización escrita de tratamiento de datos + muestra real de licitaciones como hito de la semana 1. Sin este hito, el piloto (semanas 11-12) no se cierra."),
+ ("A5", "Autonomía de datos",
+  "El proyecto NO espera la autorización de tratamiento de datos de EAG. El perfil empresarial se carga desde la plataforma con datos aportados por el usuario autorizado, y el piloto se ejecuta con oportunidades públicas de SECOP II. La autorización pasa de bloqueante externo a política interna documentada."),
 ]
 
 DECISIONES_ADOPTADAS = [
  ("B1", "Límites de archivos",
-  "20 MB por archivo y 100 MB por oportunidad como punto de partida, calibrables con la muestra real. Más viable para OCR en Render que los 50/300 MB originales."),
+  "20 MB por archivo y 100 MB por oportunidad como punto de partida, calibrables con la muestra real. Más viable para OCR en contenedor que los 50/300 MB originales."),
  ("B2", "Presupuesto de IA",
-  "Tope de gasto mensual por variable de entorno (HU-27); chunking del pliego por categorías antes de llamar; modelo configurable; store=false."),
+  "Tope de gasto mensual por variable de entorno (HU-27); fragmentación del pliego por categorías antes de llamar; modelo configurable; caché por hash y versión para no repetir llamadas."),
  ("B3", "HUs de ampliación",
-  "HU-45 a HU-48 propuestas (usuarios existentes, auditoría, configuración general, notificaciones): cubren los gaps del plan frente a las pantallas prometidas. Pendientes de validación con EAG."),
+  "HU-45 a HU-48 propuestas (usuarios existentes, auditoría, configuración general, notificaciones): cubren los gaps frente a las pantallas prometidas. Con más usuarios y sin EAG, la administración propia gana importancia."),
  ("B4", "Scheduler",
-  "Cron de Render llamando al endpoint de sincronización; menos piezas y superficie que Celery Beat."),
+  "Cron del sistema llamando al endpoint de sincronización; menos piezas y menos superficie operativa que un planificador dentro de la aplicación."),
  ("B5", "Verificación temprana de SECOP",
-  "Semana 1: verificar la relación real entre los datasets p6dx-8zbt y dmgg-8hin y la vigencia de los enlaces de descarga. Riesgo crítico temprano."),
- ("B6", "Semana 7 realista",
-  "La extracción estructurada de requisitos con validación de citas (incluida normalización OCR) se planifica en 2 semanas (7-8). Es el camino crítico."),
+  "Ya ejecutada en el spike: la API de procesos funciona, la relación con el dataset de archivos NO se confirmó. Se construye sobre lo verificado y la carga manual cubre el resto."),
+ ("B6", "Camino crítico realista",
+  "El grafo de análisis (extracción de requisitos + validación de citas + comparación) es la pieza donde el proyecto se gana o se pierde. Se planifica en 3 semanas y no se comprime."),
+ ("B7", "Orquestación con LangGraph",
+  "El grafo reemplaza a Celery + Redis. Nodos: ingesta → extracción de texto → extracción de requisitos → validación de citas → comparación → borrador. La revisión humana se implementa con interrupción del grafo y checkpointer en Postgres, de modo que el estado del análisis sobrevive reinicios y es auditable."),
+ ("B8", "Aislamiento de infraestructura",
+  "Base de datos, autenticación, almacenamiento y credenciales pertenecen al proyecto. Ningún componente de producción queda bajo cuentas o accesos de EAG."),
 ]
 
 DECISIONES_OPCIONALES = [
  ("C1", "Exportación CSV/Excel del tablero", "P1 en backlog; no bloquea el MVP."),
- ("C2", "Umbrales numéricos go/no-go", "Falsos cumplimientos aceptables y precisión mínima por campo; acordar con EAG en el hito del piloto."),
+ ("C2", "Umbrales numéricos go/no-go", "Falsos cumplimientos aceptables y precisión mínima por campo; se fijan como criterio propio y documentado, no como validación de EAG."),
 ]
 
-# (semana, foco, detalle/hitos)
-SEMANAS = [
- ("01", "Prueba técnica SECOP", "APIs p6dx-8zbt + dmgg-8hin: relación real entre datasets, descarga de documentos, corpus de evaluación. HITO: autorización de tratamiento de datos (A5) y muestra real (B5)."),
- ("02", "Fundaciones", "Monorepo, CI, ambientes, Supabase, auth por invitación (magic-link), roles + permisos (A1), migraciones, despliegue vacío."),
- ("03", "Cliente Socrata y sincronización", "Cliente Socrata, sincronización + deduplicación, horario configurable (HU-07), reintentos y límites."),
- ("04", "Tablero y detalle", "Filtros, listado, paginación, detalle de oportunidad con datos de última sincronización (HU-08 a HU-10)."),
- ("05", "Expediente documental", "Descarga + carga manual, ZIP seguro (A2), ClamAV, límites 20/100 MB (B1), extracción de texto + OCR, control de archivos (HU-11 a HU-19)."),
- ("06", "Perfil EAG", "Experiencia, contratos, personal, capacidades, finanzas; edición con versión e historial (HU-20 a HU-24)."),
- ("07", "Extracción IA de requisitos", "Extracción estructurada con IA + esquemas versionados; chunking por categorías (B2); tope de gasto mensual; salida tipada con evidencia."),
- ("08", "Validación de citas y comparación", "Validación de citas con normalización OCR (B6); motor determinista de fechas, cantidades e indicadores; estados controlados (HU-26, HU-29, HU-31)."),
- ("09", "Aprobación y entrega", "Aprobación por snapshot (A4), previsualización y PDF (WeasyPrint), correo con idempotencia (HU-33 a HU-37)."),
- ("10", "Operación y retención", "Retención 30 días (job + tombstones), reintentos, backups y rollback probado, monitoreo (Sentry), endurecimiento de seguridad."),
- ("11", "Piloto", "Licitaciones reales con muestra autorizada (depende de A5); medición de tiempo y errores frente al proceso manual (HU-42)."),
- ("12", "Cierre y go/no-go", "Correcciones, documentación, capacitación, decisión go/no-go con umbrales acordados (C2) y revisión humana registrada."),
+# (fase, nombre, duración, detalle/hitos, [entregables])
+FASES = [
+ ("F0", "Infraestructura propia", "2–3 días",
+  "Levantar un Supabase self-hosted aislado (red, volúmenes y puertos propios) y aplicar las migraciones de acceso ya escritas en el PR #19. Provisionar el usuario administrador que bloqueaba la validación real de autenticación.",
+  ["Stack Supabase operativo y aislado",
+   "3 migraciones de acceso aplicadas (roles, RLS, RPC de invitaciones)",
+   "Usuario administrador provisionado con perfil y membresía",
+   "PR #20 fusionado e issue #3 cerrada"]),
+ ("F1", "Autenticación real verificada", "3–4 días",
+  "Validar de extremo a extremo el trabajo de autenticación que ya existe y está en verde en CI pero nunca se probó contra un proveedor real: inicio de sesión, rol resuelto por la API, persistencia de sesión y cierre de sesión.",
+  ["Login, sesión persistida y logout verificados con evidencia real",
+   "PR #19 fusionado e issue #4 cerrada",
+   "Permiso «approve/send» añadido (A1)",
+   "Decisión documentada sobre el flujo passwordless descartado"]),
+ ("F2", "SECOP real y persistencia", "1 semana",
+  "Convertir el spike verificado en un conector operacional sobre el dataset de procesos que sí se comprobó. Sincronización idempotente, programada y observable.",
+  ["Cliente SECOP con paginación, timeout, reintentos y manejo de cuota",
+   "Modelo de oportunidades con ID, URL, fuente y fechas originales preservados",
+   "Sincronización idempotente y reanudable ante fallos parciales",
+   "Ejecución diaria programada y métricas por ejecución"]),
+ ("F3", "Tablero de oportunidades", "4–5 días",
+  "Interfaz de trabajo del analista sobre datos reales: listado, filtros, orden, detalle y filtros guardados, con estados de carga, vacío, error y datos desactualizados.",
+  ["Listado paginado con filtros y orden sobre datos reales",
+   "Detalle con enlace oficial, fuente y última sincronización",
+   "Filtros guardados personales y compartidos",
+   "Interfaz accesible y responsive con el sistema de diseño del proyecto"]),
+ ("F4", "Expediente documental seguro", "1,5 semanas",
+  "Reunir los documentos de cada oportunidad. Como la relación entre datasets no quedó confirmada, la carga manual es el camino principal y la descarga desde SECOP un complemento donde el spike sí verificó URLs.",
+  ["Carga manual de documentos por oportunidad",
+   "Descarga controlada desde los hosts verificados",
+   "Validación de tipo, firma, tamaño, nombres seguros y bloqueo de ejecutables y macros",
+   "Cuarentena con antivirus; un fallo del antivirus nunca equivale a archivo limpio",
+   "Almacenamiento privado con enlaces firmados de vida corta",
+   "Hash, versión, origen, estado, faltantes y fecha de retención por archivo"]),
+ ("F5", "OCR y extracción de texto", "1 semana",
+  "Convertir los archivos aprobados en texto trazable, conservando el localizador exacto de cada fragmento para poder verificar cualquier afirmación posterior.",
+  ["Extracción de PDF, DOCX y XLSX con localizadores verificables",
+   "OCR activado por umbral explícito y configurable",
+   "Estados de extracción y advertencias de calidad visibles al analista",
+   "Navegación del texto extraído a su localizador en el documento"]),
+ ("F6", "Perfil empresarial", "1 semana",
+  "Formulario desde la plataforma para cargar la información de la empresa: experiencia, contratos, personal, equipos e información financiera y legal, con evidencias y vigencias.",
+  ["Carga y edición del perfil desde la interfaz",
+   "Evidencias privadas con documento, localizador, versión y vigencia",
+   "Versionado con autor, fecha y motivo, para saber qué evidencia sustentó cada análisis",
+   "Política de retención del perfil maestro diferenciada de los documentos de oportunidad"]),
+ ("F7", "Grafo de análisis (LangGraph)", "3 semanas",
+  "El camino crítico del proyecto. Un grafo que orquesta la extracción de requisitos con IA, valida cada cita contra el texto fuente, compara con el perfil y produce un borrador, deteniéndose para la revisión humana antes de cualquier aprobación.",
+  ["Grafo con checkpointer en Postgres: el estado del análisis sobrevive reinicios y es auditable",
+   "Extracción estructurada de requisitos con esquema versionado y evidencia por requisito",
+   "Validación reproducible de citas: una cita no encontrada bloquea el requisito automático",
+   "Documentos tratados como datos no confiables; instrucciones embebidas no alteran las reglas",
+   "Reglas deterministas para fechas, cantidades, monedas, períodos e indicadores",
+   "Estados controlados: cumple, cumple_parcialmente, no_cumple, revision_manual",
+   "Interrupción del grafo para revisión y aprobación humana por snapshot",
+   "Tope de gasto mensual y caché por hash para controlar el coste de IA"]),
+ ("F8", "Informe y envío controlado", "4–5 días",
+  "Generar el informe del análisis aprobado y enviarlo únicamente a destinatarios autorizados, con idempotencia y auditoría.",
+  ["Vista previa y PDF con oportunidad, versión, aprobador, requisitos, evidencias y limitaciones",
+   "El PDF se bloquea si la aprobación no está vigente",
+   "Envío con clave de idempotencia y destinatarios autorizados",
+   "Auditoría de envíos sin contenido sensible"]),
+ ("F9", "Retención y operación", "1 semana",
+  "Completar los controles operativos antes de tratar documentos reales en producción.",
+  ["Purga configurable de archivos, texto, análisis, informes y derivados",
+   "Restauración y reversión probadas con evidencia reproducible",
+   "Observabilidad sin archivos, credenciales, tokens ni fragmentos sensibles",
+   "Endurecimiento y despliegue con entorno de pruebas autenticado"]),
+ ("F10", "Cierre y demostración", "3–4 días",
+  "Demostración de extremo a extremo con oportunidades públicas reales y entrega del manual operativo.",
+  ["Recorrido completo demostrable con datos públicos reales",
+   "Manual breve de operación y protocolo de medición",
+   "Decisión go/no-go con criterios propios documentados como tales",
+   "Registro de limitaciones y pendientes verificables"]),
 ]
 
 # (riesgo, mitigación, severidad)
 RIESGOS = [
- ("Cobertura real de SECOP (relación de datasets, ZIP, enlaces)", "B5 en semana 1 + A2 (ZIP seguro) + carga manual de respaldo (HU-12).", "Alta"),
- ("Costo y latencia de IA sobre pliegos completos", "B2: chunking por categorías, tope de gasto mensual, modelo configurable.", "Alta"),
- ("Dependencia de EAG (autorización, muestra, decisiones)", "A5 como hito bloqueante; tabla de pendientes con responsables propuestos.", "Alta"),
- ("Calidad de OCR en escaneados de pliegos", "Umbral de «texto suficiente» calibrado en semana 1; fallo u OCR deficiente pasa a revisión manual (HU-17).", "Media"),
- ("Recursos en Render (OCR + ClamAV)", "Worker Celery con ≥2 GB RAM; add-ons presupuestados (~50-80 USD/mes + IA variable).", "Media"),
- ("Prompt injection y alucinación de citas", "Documentos tratados como datos no confiables (HU-26); validación reproducible de citas; requisito sin fuente bloqueado.", "Media"),
+ ("Relación entre datasets de SECOP no confirmada (procesos ↔ archivos)",
+  "La carga manual de documentos es el camino principal, no un respaldo. No se construye sobre una relación no verificada.", "Alta"),
+ ("Costo y latencia de IA sobre pliegos completos",
+  "Fragmentación por categorías, tope de gasto mensual, caché por hash y modelo configurable.", "Alta"),
+ ("El grafo de análisis es el camino crítico y concentra el riesgo del proyecto",
+  "Empezar con un grafo lineal y sin autonomía: nodos deterministas, salidas validadas por esquema y validación de citas obligatoria. No se comprime el plazo.", "Alta"),
+ ("Calidad de OCR en pliegos escaneados",
+  "Umbral de texto suficiente calibrado desde el inicio; OCR deficiente conduce a revisión manual, nunca a éxito silencioso.", "Media"),
+ ("Prompt injection y alucinación de citas",
+  "Documentos tratados como datos no confiables (HU-26); validación reproducible de citas; un requisito sin fuente verificable queda bloqueado.", "Media"),
+ ("Reclamo de propiedad sobre el software",
+  "Repositorio, base de datos y credenciales a nombre del proyecto. Autoría registrada en el historial de commits. Sin entrega de credenciales ni accesos administrativos de producción.", "Alta"),
+ ("Acumulación de deuda en autenticación sin probar",
+  "Se resuelve en la Fase 1, la primera semana de trabajo. Es lo primero que se cierra.", "Media"),
 ]
 
 PREGUNTAS_EAG = [
@@ -95,10 +172,14 @@ PREGUNTAS_EAG = [
  "¿Quién aprueba y envía el informe? (recomendado: permiso «approve/send» asignable, no rol separado — A1)",
  "¿La retención de 30 días aplica también al informe final aprobado? (recomendado: conservar el informe aprobado como maestro y expirar solo los insumos temporales)",
  "¿Proveedor de IA, tope de presupuesto mensual y autorización escrita para enviar documentos internos (contratos, RUP, hojas de vida, finanzas)?",
- "¿Cuándo entrega EAG la muestra real de licitaciones y la autorización de tratamiento de datos? (define si el piloto cierra en 12 semanas)",
  "¿Se confirman los límites 20 MB / 100 MB o se mantienen 50 MB / 300 MB?",
  "¿RUP como fuente estructurada de indicadores financieros, o estados financieros cargados manualmente?",
+ "¿Qué umbrales de calidad, errores y mejora permiten aceptar el piloto?",
 ]
+
+NOTA_PREGUNTAS = ("Estas preguntas siguen abiertas, pero ya no bloquean el trabajo. Cada una tiene una "
+ "respuesta provisional adoptada por el equipo y marcada como tal; si EAG responde, se ajusta la "
+ "configuración, no se rehace el sistema.")
 
 # HUs de ampliación propuestas (cubren gaps detectados en la auditoría)
 HUS_AMPLIACION = [
@@ -117,13 +198,13 @@ HUS_AMPLIACION = [
 ]
 
 CRITERIOS_ACEPTACION = [
- "Sincronizar sin duplicados y aplicar filtros configurables.",
+ "Sincronizar oportunidades reales sin duplicados y con filtros configurables.",
  "Procesar documentos o solicitar carga manual cuando la fuente oficial no los entregue.",
  "Presentar evidencia (documento, localizador, fragmento, versión) para cada requisito.",
  "Impedir generar o enviar informes sin aprobación humana vigente.",
  "Respetar permisos por rol y recurso (acceso horizontal bloqueado).",
- "Eliminar contenido temporal a los 30 días (plazo configurable, sujeto a validación de EAG).",
- "Piloto: reducir al menos 60 % el tiempo de preevaluación frente al proceso manual (medido, no garantizado).",
+ "Eliminar contenido temporal según el plazo configurado, con purga verificable.",
+ "Demostrar el recorrido completo de extremo a extremo con oportunidades públicas reales.",
 ]
 
 # (punto, contradicción detectada, resolución)
@@ -133,9 +214,13 @@ INCONSISTENCIAS_RESUELTAS = [
  ("ZIP", "El plan admitía ZIP; HU-12 lo rechazaba sin controles seguros.",
   "A2: ZIP admitido con extracción en sandbox y controles explícitos."),
  ("Retención 30 días", "El plan lo daba por hecho; HU-38 lo marcaba pendiente de validación.",
-  "Configurable y validado por EAG; el informe aprobado se conserva como maestro."),
+  "Configurable y verificable con reloj controlado; el informe aprobado se conserva como maestro."),
  ("Límites 50/300 MB", "El plan los fijaba como aceptación; el PDF los listaba pendientes.",
   "B1: 20 MB / 100 MB como punto de partida calibrable."),
  ("Horario 06:00 + 7 días", "El plan lo daba por hecho; HU-07 exigía validar el campo temporal real del dataset.",
-  "B5: verificación en semana 1; 06:00 Bogotá / 7 días como configuración inicial."),
+  "Se usa el campo temporal verificado en el spike; 06:00 y 7 días como configuración inicial."),
+ ("Dependencia de EAG", "El plan y las HUs trataban la autorización y la muestra de EAG como hitos bloqueantes.",
+  "A5 / B8: el proyecto no espera entregables de EAG. Perfil cargable desde la plataforma, piloto con datos públicos y credenciales propias."),
+ ("Orquestación de tareas", "El plan original usaba Celery + Redis, sin definir dónde vivía el estado del análisis ni la revisión humana.",
+  "B7: grafo LangGraph con checkpointer en Postgres; la revisión humana es una interrupción del grafo."),
 ]

@@ -7,7 +7,7 @@ como único CTA, pills, tnum, banda cream para interludios.
 import html as H
 import os
 from data_hus import EPICAS, PENDIENTES, EXCLUSIONES, FLOW, ACTORS
-from data_plan import RESUMEN, STACK, DECISIONES_CRITICAS, SEMANAS, META
+from data_plan import RESUMEN, STACK, DECISIONES_CRITICAS, FASES, META
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
@@ -43,8 +43,8 @@ dec_cards_q = "".join(
     f'<div class="dec"><b><span class="tag">Crítica</span>{esc(d)} · {esc(ti)}</b>{esc(te)}</div>'
     for d, ti, te in DECISIONES_CRITICAS)
 sem_q = "".join(
-    f'<li><strong>Sem. {esc(s)}</strong><span>{esc(f)}</span></li>'
-    for s, f, _d in SEMANAS)
+    f'<li><strong>{esc(cod)} · {esc(nom)}</strong><span>{esc(dur)} — {esc(det[:150])}</span></li>'
+    for cod, nom, dur, det, _ent in FASES)
 
 CSS = """
 :root{
@@ -109,6 +109,9 @@ strong{font-weight:500}
 .stat-pill{background:var(--canvas);border:1px solid var(--hairline);border-radius:9999px;
   padding:8px 16px;font-size:14px;color:var(--ink-2);box-shadow:var(--shadow-1);font-feature-settings:"tnum"}
 .stat-pill b{color:var(--primary-deep);font-weight:500;font-size:16px}
+.hero-note{margin:1.1rem 0 0;max-width:62ch;padding:.95rem 1.15rem;border-radius:12px;
+  background:rgba(255,255,255,.72);border:1px solid rgba(83,58,253,.18);
+  font-size:.9rem;line-height:1.6;color:var(--ink-2)}
 .hero-cta{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap}
 
 /* ---------- Secciones ---------- */
@@ -244,9 +247,12 @@ page = f'''<!DOCTYPE html>
     <div class="wrap">
       <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión {ver} · {fecha}</div>
       <h1>Plan de acción e historias de usuario del <em>MVP</em></h1>
-      <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Este documento es una <strong>propuesta del equipo</strong>: no demuestra aprobación empresarial, cobertura completa de SECOP, integración productiva ni mejoras medidas. Toda decisión final requiere revisión humana y validación de EAG.</p>
+      <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Una aplicación web que consulta oportunidades reales, reúne y procesa sus documentos, extrae los requisitos con IA validando cada cita contra el texto fuente, los compara con el perfil de la empresa y produce un borrador que una persona revisa y aprueba antes del informe.</p>
+      <div class="hero-note">
+        <strong>El proyecto no depende de entregables de EAG.</strong> Se construye con datos públicos reales de SECOP II, base de datos propia y perfil empresarial cargable desde la plataforma. Cada pregunta sin responder tiene una respuesta provisional del equipo, marcada como tal.
+      </div>
       <div class="stat-row">
-        <span class="stat-pill"><b>{len(SEMANAS)}</b> semanas de plan</span>
+        <span class="stat-pill"><b>{len(FASES)}</b> fases · 11 semanas</span>
         <span class="stat-pill"><b>{total_hus}</b> historias propuestas</span>
         <span class="stat-pill"><b>{len(EPICAS)}</b> épicas funcionales</span>
         <span class="stat-pill"><b>2</b> roles iniciales</span>
