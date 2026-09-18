@@ -124,7 +124,7 @@ KEYWORDS = {
   "plan-resumen": "objetivo alcance resumen criterios aceptacion",
   "plan-decisiones": "decisiones cambios a1 a2 a3 a4 a5 zip snapshot autorizacion",
   "plan-stack": "tecnologias stack react fastapi supabase redis render vercel tesseract clamav pdf correo",
-  "plan-fases": "cronograma calendario fases etapa hitos duracion F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 F10",
+  "plan-fases": "cronograma calendario fases etapa hitos duracion F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 F13 RAG vectores pgvector embeddings recuperacion SECOP I II",
   "plan-riesgos": "riesgo peligro costo gasto openai presupuesto latencia",
   "plan-eag": "preguntas presupuesto cuesta cuanto cuesta proveedor ia autorizacion decision",
   "estado": "estado avance implementado construido repo github issue pr rama codigo pruebas sincronizacion secop",
@@ -217,7 +217,7 @@ plan_html = f'''<section id="plan">
 
 <section class="plan-sub" id="plan-fases">
 <h3>Implementación por fases</h3>
-<p class="section-sub">Once semanas de trabajo efectivo repartidas en once fases. La fase F7 (grafo de análisis con LangGraph) es el camino crítico y concentra el riesgo del proyecto: no se comprime. F3 y F6 pueden solaparse con fases vecinas.</p>
+<p class="section-sub">Catorce fases. Las que concentran el riesgo son F8 (grafo de análisis) y F9 (base de conocimiento y RAG): son las que convierten documentos en evidencia verificable. La fase F7 (grafo de análisis con LangGraph) es el camino crítico y concentra el riesgo del proyecto: no se comprime. F3 y F6 pueden solaparse con fases vecinas.</p>
 <div class="tbl-wrap"><table class="doc-t">
 <thead><tr><th>Fase</th><th>Nombre y duración</th><th>Detalle y entregables</th></tr></thead>
 <tbody>
@@ -542,7 +542,7 @@ html_doc = f'''<!DOCTYPE html>
     <p class="callout-go-2"><strong>El proyecto no depende de entregables de EAG.</strong> Se construye con datos públicos reales de SECOP II, una base de datos propia y un perfil empresarial cargable desde la plataforma. Cada decisión que EAG no ha respondido tiene una respuesta provisional del equipo, marcada como tal: si EAG responde, se ajusta la configuración, no se rehace el sistema.</p>
   </div>
   <div class="stat-row">
-    <span class="stat-pill"><b>{len(FASES)}</b> fases · 11 semanas</span>
+    <span class="stat-pill"><b>{len(FASES)}</b> fases de trabajo</span>
     <span class="stat-pill"><b>{total_hus}</b> historias</span>
     <span class="stat-pill"><b>{len(EPICAS)}</b> épicas</span>
     <span class="stat-pill">Base: CONTEXTO.md · CASO_DE_USO.md · MATRIZ_DE_PERMISOS.md · BACKLOG.md · MVP-01 a MVP-14 · Auditoría 2026-09-10</span>
@@ -700,17 +700,22 @@ with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8") as f:
 import re
 ids = sorted(set(re.findall(r"HU-\d+", html_doc)), key=lambda x: int(x.split("-")[1]))
 orig = [i for i in ids if int(i.split("-")[1]) <= 44]
-ampl = [i for i in ids if int(i.split("-")[1]) > 44]
+# HU-45 a HU-48 son las ampliaciones propuestas; a partir de HU-49 empiezan las
+# epicas nuevas (RAG y cobertura SECOP I y II), que son alcance, no ampliacion.
+ampl = [i for i in ids if 45 <= int(i.split("-")[1]) <= 48]
+nuevas = [i for i in ids if int(i.split("-")[1]) >= 49]
 print("docs/index.html generado:", os.path.getsize(os.path.join(OUT, "index.html")), "bytes")
-print("HUs originales:", len(orig), "| ampliaciones:", len(ampl), "| total:", len(ids))
-assert len(orig) == 44, f"Se esperaban 44 HUs originales, hay {len(orig)}"
+print("HUs base:", len(orig), "| ampliaciones:", len(ampl), "| epicas nuevas:", len(nuevas),
+      "| total:", len(ids))
+assert len(orig) == 44, f"Se esperaban 44 HUs base, hay {len(orig)}"
 assert sorted(ampl) == ["HU-45", "HU-46", "HU-47", "HU-48"], f"Ampliaciones inesperadas: {ampl}"
-print("OK: 44/44 + 4 ampliaciones")
+assert sorted(nuevas) == [f"HU-{n}" for n in range(49, 65)], f"Nuevas inesperadas: {nuevas}"
+print("OK: 44 base + 4 ampliaciones + 16 nuevas")
 print("Plan: fases =", len(FASES), "| stack =", len(STACK),
       "| decisiones =", len(DECISIONES_CRITICAS) + len(DECISIONES_ADOPTADAS) + len(DECISIONES_OPCIONALES),
       "| riesgos =", len(RIESGOS), "| preguntas EAG =", len(PREGUNTAS_EAG),
       "| ampliaciones =", len(HUS_AMPLIACION))
-assert len(FASES) == 11
+assert len(FASES) == 14
 assert len(HUS_AMPLIACION) == 4
 assert all(k in html_doc for k in
            ["#plan-resumen", "#plan-decisiones", "#plan-stack", "#plan-fases",

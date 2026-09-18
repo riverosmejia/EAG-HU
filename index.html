@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EAG Ingenieros · MVP · Plan de acción e Historias de Usuario</title>
-<meta name="description" content="Plan de acción (12 semanas) e 44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 10 épicas funcionales. Versión 2.0 · 2026-09-17.">
+<meta name="description" content="Plan de acción (12 semanas) e 60 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S. 12 épicas funcionales. Versión 3.0 · 2026-09-18.">
 <meta property="og:title" content="EAG Ingenieros · MVP · Plan de acción e Historias de Usuario">
-<meta property="og:description" content="Plan de acción (12 semanas) e 44 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
+<meta property="og:description" content="Plan de acción (12 semanas) e 60 historias de usuario propuestas para el MVP de la plataforma de análisis de oportunidades de SECOP II de EAG Ingenieros S.A.S.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 10v12L16 30 2 22V10z' fill='%23533afd'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%23fff' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -195,16 +195,16 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
 <main>
   <section class="hero">
     <div class="wrap">
-      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 2.0 · 2026-09-17</div>
+      <div class="eyebrow">EAG Ingenieros S.A.S. · MVP · Versión 3.0 · 2026-09-18</div>
       <h1>Plan de acción e historias de usuario del <em>MVP</em></h1>
       <p class="lead">Plataforma de apoyo al análisis de oportunidades de <strong>SECOP II</strong> para EAG Ingenieros S.A.S. Una aplicación web que consulta oportunidades reales, reúne y procesa sus documentos, extrae los requisitos con IA validando cada cita contra el texto fuente, los compara con el perfil de la empresa y produce un borrador que una persona revisa y aprueba antes del informe.</p>
       <div class="hero-note">
         <strong>El proyecto no depende de entregables de EAG.</strong> Se construye con datos públicos reales de SECOP II, base de datos propia y perfil empresarial cargable desde la plataforma. Cada pregunta sin responder tiene una respuesta provisional del equipo, marcada como tal.
       </div>
       <div class="stat-row">
-        <span class="stat-pill"><b>11</b> fases · 11 semanas</span>
-        <span class="stat-pill"><b>44</b> historias propuestas</span>
-        <span class="stat-pill"><b>10</b> épicas funcionales</span>
+        <span class="stat-pill"><b>14</b> fases de trabajo</span>
+        <span class="stat-pill"><b>60</b> historias propuestas</span>
+        <span class="stat-pill"><b>12</b> épicas funcionales</span>
         <span class="stat-pill"><b>2</b> roles iniciales</span>
       </div>
       <div class="hero-cta">
@@ -231,11 +231,11 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
       <div class="sec-head reveal" style="margin-top:34px">
         <h2 class="sec-title" style="font-size:24px">Stack</h2>
       </div>
-      <div class="stack-row reveal"><span class="stat-pill">React + Vite</span><span class="stat-pill">FastAPI</span><span class="stat-pill">Supabase propio</span><span class="stat-pill">LangGraph</span><span class="stat-pill">Cron</span><span class="stat-pill">Adaptador IA</span><span class="stat-pill">Tesseract</span><span class="stat-pill">ClamAV</span><span class="stat-pill">WeasyPrint</span><span class="stat-pill">Logs seguros</span></div>
+      <div class="stack-row reveal"><span class="stat-pill">React + Vite</span><span class="stat-pill">FastAPI</span><span class="stat-pill">Supabase propio</span><span class="stat-pill">LangGraph</span><span class="stat-pill">Cron</span><span class="stat-pill">Adaptador IA</span><span class="stat-pill">pgvector</span><span class="stat-pill">Chunking</span><span class="stat-pill">Embeddings</span><span class="stat-pill">Tesseract</span><span class="stat-pill">ClamAV</span><span class="stat-pill">WeasyPrint</span><span class="stat-pill">Logs seguros</span></div>
       <div class="sec-head reveal" style="margin-top:34px">
         <h2 class="sec-title" style="font-size:24px">Cadencia por semanas</h2>
       </div>
-      <ol class="flow reveal"><li><strong>F0 · Infraestructura propia</strong><span>2–3 días — Levantar un Supabase self-hosted aislado (red, volúmenes y puertos propios) y aplicar las migraciones de acceso ya escritas en el PR #19. Provisionar </span></li><li><strong>F1 · Autenticación real verificada</strong><span>3–4 días — Validar de extremo a extremo el trabajo de autenticación que ya existe y está en verde en CI pero nunca se probó contra un proveedor real: inicio de s</span></li><li><strong>F2 · SECOP real y persistencia</strong><span>1 semana — Convertir el spike verificado en un conector operacional sobre el dataset de procesos que sí se comprobó. Sincronización idempotente, programada y obs</span></li><li><strong>F3 · Tablero de oportunidades</strong><span>4–5 días — Interfaz de trabajo del analista sobre datos reales: listado, filtros, orden, detalle y filtros guardados, con estados de carga, vacío, error y datos </span></li><li><strong>F4 · Expediente documental seguro</strong><span>1,5 semanas — Reunir los documentos de cada oportunidad. Como la relación entre datasets no quedó confirmada, la carga manual es el camino principal y la descarga d</span></li><li><strong>F5 · OCR y extracción de texto</strong><span>1 semana — Convertir los archivos aprobados en texto trazable, conservando el localizador exacto de cada fragmento para poder verificar cualquier afirmación post</span></li><li><strong>F6 · Perfil empresarial</strong><span>1 semana — Formulario desde la plataforma para cargar la información de la empresa: experiencia, contratos, personal, equipos e información financiera y legal, c</span></li><li><strong>F7 · Grafo de análisis (LangGraph)</strong><span>3 semanas — El camino crítico del proyecto. Un grafo que orquesta la extracción de requisitos con IA, valida cada cita contra el texto fuente, compara con el perf</span></li><li><strong>F8 · Informe y envío controlado</strong><span>4–5 días — Generar el informe del análisis aprobado y enviarlo únicamente a destinatarios autorizados, con idempotencia y auditoría.</span></li><li><strong>F9 · Retención y operación</strong><span>1 semana — Completar los controles operativos antes de tratar documentos reales en producción.</span></li><li><strong>F10 · Cierre y demostración</strong><span>3–4 días — Demostración de extremo a extremo con oportunidades públicas reales y entrega del manual operativo.</span></li></ol>
+      <ol class="flow reveal"><li><strong>F0 · Infraestructura propia</strong><span>2–3 días — Levantar un Supabase self-hosted aislado (red, volúmenes y puertos propios) y aplicar las migraciones de acceso ya escritas en el PR #19. Provisionar </span></li><li><strong>F1 · Autenticación real verificada</strong><span>3–4 días — Validar de extremo a extremo el trabajo de autenticación que ya existe y está en verde en CI pero nunca se probó contra un proveedor real: inicio de s</span></li><li><strong>F2 · SECOP real y persistencia</strong><span>1 semana — Convertir el spike verificado en un conector operacional sobre el dataset de procesos que sí se comprobó. Sincronización idempotente, programada y obs</span></li><li><strong>F3 · Cobertura SECOP I y II</strong><span>4–5 días — Ampliar la fuente única a las dos plataformas. Verificado con datos reales: SECOP I expone 78 campos frente a los 59 de SECOP II y sus esquemas no son</span></li><li><strong>F4 · Tablero de oportunidades</strong><span>4–5 días — Interfaz de trabajo del analista sobre datos reales: listado, filtros, orden, detalle y filtros guardados, con estados de carga, vacío, error y datos </span></li><li><strong>F5 · Expediente documental seguro</strong><span>1,5 semanas — Reunir los documentos de cada oportunidad. Como la relación entre datasets no quedó confirmada, la carga manual es el camino principal y la descarga d</span></li><li><strong>F6 · OCR y extracción de texto</strong><span>1 semana — Convertir los archivos aprobados en texto trazable, conservando el localizador exacto de cada fragmento para poder verificar cualquier afirmación post</span></li><li><strong>F7 · Perfil empresarial</strong><span>1 semana — Formulario desde la plataforma para cargar la información de la empresa: experiencia, contratos, personal, equipos e información financiera y legal, c</span></li><li><strong>F8 · Grafo de análisis (LangGraph)</strong><span>3 semanas — El camino crítico del proyecto. Un grafo que orquesta la extracción de requisitos con IA, valida cada cita contra el texto fuente, compara con el perf</span></li><li><strong>F9 · Base de conocimiento y RAG</strong><span>2 semanas — Los documentos que aporta la empresa se fragmentan, se indexan con representación vectorial y se recuperan por significado. Es lo que permite contrast</span></li><li><strong>F10 · Comparación asistida por recuperación</strong><span>1,5 semanas — Conectar el grafo de análisis con la base de conocimiento: cada requisito extraído del pliego se contrasta con la evidencia recuperada, y el resultado</span></li><li><strong>F11 · Informe y envío controlado</strong><span>4–5 días — Generar el informe del análisis aprobado y enviarlo únicamente a destinatarios autorizados, con idempotencia y auditoría.</span></li><li><strong>F12 · Retención y operación</strong><span>1 semana — Completar los controles operativos antes de tratar documentos reales en producción.</span></li><li><strong>F13 · Cierre y demostración</strong><span>3–4 días — Demostración de extremo a extremo con oportunidades públicas reales y entrega del manual operativo.</span></li></ol>
       <div class="hero-cta reveal" style="margin-top:22px">
         <a class="btn-pill" href="docs/#plan">Ver el plan detallado →</a>
         <a class="btn-pill ghost" href="docs/">Versión documentación completa</a>
@@ -278,8 +278,8 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
     <div class="wrap">
       <div class="sec-head reveal">
         <div class="sec-kicker">04 · Mapa de épicas</div>
-        <h2 class="sec-title">Las 10 épicas funcionales</h2>
-        <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las 44 historias está en la versión documentación.</p>
+        <h2 class="sec-title">Las 12 épicas funcionales</h2>
+        <p class="sec-sub">Cada épica agrupa historias y se vincula con las issues del backlog. El detalle completo de las 60 historias está en la versión documentación.</p>
       </div>
       <div class="tbl-wrap reveal">
         <table class="doc-t">
@@ -295,11 +295,13 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
 <tr><td class='rowhead tnum'>E8</td><td>Informe y comunicación controlada</td><td class='tnum'>HU-35 → HU-37</td><td class='tnum'>MVP-12</td><td class='tnum'>3</td></tr>
 <tr><td class='rowhead tnum'>E9</td><td>Retención, operación y recuperación</td><td class='tnum'>HU-38 → HU-41</td><td class='tnum'>MVP-13</td><td class='tnum'>4</td></tr>
 <tr><td class='rowhead tnum'>E10</td><td>Piloto, medición y decisión de lanzamiento</td><td class='tnum'>HU-42 → HU-44</td><td class='tnum'>MVP-14</td><td class='tnum'>3</td></tr>
+<tr><td class='rowhead tnum'>E11</td><td>Base de conocimiento y RAG</td><td class='tnum'>HU-49 → HU-58</td><td class='tnum'>MVP-15</td><td class='tnum'>10</td></tr>
+<tr><td class='rowhead tnum'>E12</td><td>Cobertura SECOP I y SECOP II</td><td class='tnum'>HU-59 → HU-64</td><td class='tnum'>MVP-16</td><td class='tnum'>6</td></tr>
           </tbody>
         </table>
       </div>
       <div class="hero-cta reveal" style="margin-top:22px">
-        <a class="btn-pill dark" href="docs/">Ver las 44 historias completas</a>
+        <a class="btn-pill dark" href="docs/">Ver las 60 historias completas</a>
       </div>
     </div>
   </section>
@@ -329,7 +331,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
       </div>
       <div class="callout note reveal">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
-        <span><strong>Criterio de cierre del MVP:</strong> las 44 historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con pruebas reproducibles, revisión humana y dependencias técnicas aceptadas. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</span>
+        <span><strong>Criterio de cierre del MVP:</strong> las 60 historias representan el alcance funcional considerado. Una historia solo puede darse por aceptada con pruebas reproducibles, revisión humana y dependencias técnicas aceptadas. Las historias del piloto no se completan con datos simulados; sin usuarios o muestra autorizada, permanecen pendientes.</span>
       </div>
     </div>
   </section>
@@ -356,7 +358,7 @@ footer{background:var(--canvas);border-top:1px solid var(--hairline);padding:64p
 
 <footer>
   <div class="wrap foot">
-    <span>EAG Ingenieros S.A.S. · Plan de acción e historias de usuario del MVP · Versión 2.0 · 2026-09-17</span>
+    <span>EAG Ingenieros S.A.S. · Plan de acción e historias de usuario del MVP · Versión 3.0 · 2026-09-18</span>
     <span class="tnum"><a href="https://github.com/riverosmejia/EAG-HU">riverosmejia/EAG-HU</a> · <a href="docs/">documentación</a></span>
   </div>
 </footer>

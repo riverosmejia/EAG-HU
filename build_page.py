@@ -252,7 +252,7 @@ page = f'''<!DOCTYPE html>
         <strong>El proyecto no depende de entregables de EAG.</strong> Se construye con datos públicos reales de SECOP II, base de datos propia y perfil empresarial cargable desde la plataforma. Cada pregunta sin responder tiene una respuesta provisional del equipo, marcada como tal.
       </div>
       <div class="stat-row">
-        <span class="stat-pill"><b>{len(FASES)}</b> fases · 11 semanas</span>
+        <span class="stat-pill"><b>{len(FASES)}</b> fases de trabajo</span>
         <span class="stat-pill"><b>{total_hus}</b> historias propuestas</span>
         <span class="stat-pill"><b>{len(EPICAS)}</b> épicas funcionales</span>
         <span class="stat-pill"><b>2</b> roles iniciales</span>
